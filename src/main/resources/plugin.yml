@@ -1,0 +1,19 @@
+author: eccentric_nz
+dev-url: http://dev.bukkit.org/server-mods/discoverwarps/
+description: Adds Skyrim type warps to Minecraft Server
+main: me.eccentric_nz.plugins.discoverwarps.DiscoverWarps
+name: DiscoverWarps
+startup: postworld
+version: '1.0'
+permissions:
+  discoverwarps.use:
+    description: Allow players to use DiscoverWarps
+    default: op
+  discoverwarps.admin:
+    description: Allow players to create and administer DiscoverPlates
+    default: op
+commands:
+  discoverwarps:
+    aliases: [dw]
+    description: Allow players to set, delete, enable, disable, list and teleport to DiscoverWarps
+    usage: type /<command> to see help...
