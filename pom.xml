@@ -2,12 +2,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
     </repositories>
     <build>
@@ -27,7 +31,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.3-SNAPSHOT</version>
+            <version>1.4.5-R1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ci.herocraftonline.com</groupId>
+            <artifactId>vault</artifactId>
+            <version>1.2.22</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
