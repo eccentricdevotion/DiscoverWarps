@@ -1,3 +1,7 @@
 no_damage: false
 no_damage_time: 10
+allow_set_spawn: false
+allow_buying: false
+xp_on_discover: false
+xp_to_give: 3
 debug: false
