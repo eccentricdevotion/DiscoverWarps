@@ -36,11 +36,13 @@ public class DiscoverWarpsProtectionListener implements Listener {
                 y += 1;
             }
             int z = l.getBlockZ();
+            Statement statement = null;
+            ResultSet rsPlate = null;
             try {
                 Connection connection = service.getConnection();
-                Statement statement = connection.createStatement();
+                statement = connection.createStatement();
                 String getQuery = "SELECT name FROM discoverwarps WHERE world = '" + w + "' AND x = " + x + " AND y = " + y + " AND z = " + z;
-                ResultSet rsPlate = statement.executeQuery(getQuery);
+                rsPlate = statement.executeQuery(getQuery);
                 if (rsPlate.isBeforeFirst()) {
                     Player p = event.getPlayer();
                     p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You cannot break this pressure plate, use " + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET + " to remove it.");
@@ -48,6 +50,20 @@ public class DiscoverWarpsProtectionListener implements Listener {
                 }
             } catch (SQLException e) {
                 plugin.debug("Could not find discover plate to protect, " + e);
+            } finally {
+                if (rsPlate != null) {
+                    try {
+                        rsPlate.close();
+                    } catch (Exception e) {
+                    }
+                }
+                if (statement != null) {
+                    try {
+
+                        statement.close();
+                    } catch (Exception e) {
+                    }
+                }
             }
         }
     }

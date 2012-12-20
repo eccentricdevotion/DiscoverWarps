@@ -28,11 +28,13 @@ public class DiscoverWarpsExplodeListener implements Listener {
             return;
         }
         List<Block> blocks = event.blockList();
+        Statement statement = null;
+        ResultSet rsWarpBlocks = null;
         try {
             Connection connection = service.getConnection();
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             String queryWarpBlocks = "SELECT * FROM discoverwarps";
-            ResultSet rsWarpBlocks = statement.executeQuery(queryWarpBlocks);
+            rsWarpBlocks = statement.executeQuery(queryWarpBlocks);
             if (rsWarpBlocks.isBeforeFirst()) {
                 while (rsWarpBlocks.next()) {
                     String foo = rsWarpBlocks.getString("world").trim();
@@ -51,10 +53,22 @@ public class DiscoverWarpsExplodeListener implements Listener {
                     }
                 }
             }
-            rsWarpBlocks.close();
-            statement.close();
         } catch (SQLException e) {
             plugin.debug("Explosion Listener error, " + e);
+        } finally {
+            if (rsWarpBlocks != null) {
+                try {
+                    rsWarpBlocks.close();
+                } catch (Exception e) {
+                }
+            }
+            if (statement != null) {
+                try {
+
+                    statement.close();
+                } catch (Exception e) {
+                }
+            }
         }
     }
 }
