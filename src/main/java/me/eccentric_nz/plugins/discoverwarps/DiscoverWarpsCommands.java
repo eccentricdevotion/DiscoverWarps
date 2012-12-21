@@ -38,7 +38,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("disable");
         admincmds.add("auto");
         admincmds.add("cost");
-        admincmds.add("allow_set_spawn");
         admincmds.add("allow_buying");
         admincmds.add("xp_on_discover");
         this.usercmds = new ArrayList<String>();
@@ -76,13 +75,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     boolean bool = !plugin.getConfig().getBoolean("xp_on_discover");
                     plugin.getConfig().set("xp_on_discover", bool);
                     sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "xp_on_discover was set to: " + bool);
-                    plugin.saveConfig();
-                    return true;
-                }
-                if (args[0].equalsIgnoreCase("allow_set_spawn")) {
-                    boolean bool = !plugin.getConfig().getBoolean("allow_set_spawn");
-                    plugin.getConfig().set("allow_set_spawn", bool);
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "allow_set_spawn was set to: " + bool);
                     plugin.saveConfig();
                     return true;
                 }
@@ -411,45 +403,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not buy discover plate, " + e);
-                    }
-                }
-                if (args[0].equalsIgnoreCase("spawn")) {
-                    if (!plugin.getConfig().getBoolean("allow_set_spawn")) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You are not allowed to set DiscoverWarp spawns on this server!");
-                        return true;
-                    }
-                    Player player;
-                    if (sender instanceof Player) {
-                        player = (Player) sender;
-                    } else {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "This command requires a player!");
-                        return true;
-                    }
-                    if (args.length < 2) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You need to supply a warp name!");
-                        return false;
-                    }
-                    try {
-                        Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
-                        String queryLoc = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsLoc = statement.executeQuery(queryLoc);
-                        // check name is valid
-                        if (rsLoc.next()) {
-                            World w = plugin.getServer().getWorld(rsLoc.getString("world"));
-                            int x = rsLoc.getInt("x");
-                            int y = rsLoc.getInt("y");
-                            int z = rsLoc.getInt("z");;
-                            Location loc = new Location(w, x, y, z);
-                            player.setBedSpawnLocation(loc, true);
-                            player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Your spawn location was set to " + args[1]);
-                            return true;
-                        } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
-                            return true;
-                        }
-                    } catch (SQLException e) {
-                        plugin.debug("Could not set bed spawn location, " + e);
                     }
                 }
             }

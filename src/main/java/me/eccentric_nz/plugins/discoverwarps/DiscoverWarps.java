@@ -68,7 +68,6 @@ public class DiscoverWarps extends JavaPlugin {
         File myconfigfile = new File(getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(myconfigfile);
         if (!config.contains("allow_set_spawn")) {
-            this.getConfig().set("allow_set_spawn", false);
             this.getConfig().set("allow_buying", false);
             this.getConfig().set("xp_on_discover", false);
             this.getConfig().set("xp_to_give", 3);
