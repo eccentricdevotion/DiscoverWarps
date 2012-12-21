@@ -8,19 +8,21 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DiscoverWarps extends JavaPlugin {
 
-    protected DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     private DiscoverWarpsCommands commando;
     PluginManager pm = Bukkit.getServer().getPluginManager();
-    DiscoverWarpsPlateListener plateListener = new DiscoverWarpsPlateListener(plugin);
-    DiscoverWarpsProtectionListener protectionListener = new DiscoverWarpsProtectionListener(plugin);
-    DiscoverWarpsExplodeListener explodeListener = new DiscoverWarpsExplodeListener(plugin);
+    DiscoverWarpsPlateListener plateListener = new DiscoverWarpsPlateListener(this);
+    DiscoverWarpsProtectionListener protectionListener = new DiscoverWarpsProtectionListener(this);
+    DiscoverWarpsExplodeListener explodeListener = new DiscoverWarpsExplodeListener(this);
     private Vault vault;
     public Economy economy;
+    private FileConfiguration config = null;
 
     @Override
     public void onDisable() {
@@ -34,9 +36,6 @@ public class DiscoverWarps extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = this;
-        this.saveDefaultConfig();
-
         if (!getDataFolder().exists()) {
             if (!getDataFolder().mkdir()) {
                 System.err.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Could not create directory!");
@@ -45,10 +44,7 @@ public class DiscoverWarps extends JavaPlugin {
             getDataFolder().setWritable(true);
             getDataFolder().setExecutable(true);
         }
-        // add allow_buying to config if missing
-        if (!getConfig().contains("allow_buying")) {
-            getConfig().set("allow_buying", true);
-        }
+        this.saveDefaultConfig();
         try {
             String path = getDataFolder() + File.separator + "DiscoverWarps.db";
             service.setConnection(path);
@@ -56,10 +52,10 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (Exception e) {
             System.err.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
-        pm.registerEvents(plateListener, plugin);
-        pm.registerEvents(protectionListener, plugin);
-        pm.registerEvents(explodeListener, plugin);
-        commando = new DiscoverWarpsCommands(plugin);
+        pm.registerEvents(plateListener, this);
+        pm.registerEvents(protectionListener, this);
+        pm.registerEvents(explodeListener, this);
+        commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
         try {
@@ -68,6 +64,18 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
+        // add allow_buying etc to config if missing
+        File myconfigfile = new File(getDataFolder(), "config.yml");
+        config = YamlConfiguration.loadConfiguration(myconfigfile);
+        if (!config.contains("allow_set_spawn")) {
+            this.getConfig().set("allow_set_spawn", false);
+            this.getConfig().set("allow_buying", false);
+            this.getConfig().set("xp_on_discover", false);
+            this.getConfig().set("xp_to_give", 3);
+            this.saveConfig();
+            System.out.println("[DiscoverWarps] Added new config options");
+        }
+
         if (getConfig().getBoolean("allow_buying")) {
             if (!setupVault()) {
                 pm.disablePlugin(this);
