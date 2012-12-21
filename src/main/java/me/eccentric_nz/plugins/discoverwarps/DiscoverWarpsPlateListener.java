@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class DiscoverWarpsPlateListener implements Listener {
 
-    private DiscoverWarps plugin;
+    DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
 
     public DiscoverWarpsPlateListener(DiscoverWarps plugin) {
@@ -74,8 +74,9 @@ public class DiscoverWarpsPlateListener implements Listener {
                                 queryDiscover = "INSERT INTO players (player, visited) VALUES ('" + name + "','" + id + "')";
                             }
                             statement.executeUpdate(queryDiscover);
-                            if (plugin.getConfig().getBoolean("xp_on_discover")) {
+                            if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
                                 Location loc = p.getLocation();
+                                loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
                                 ((ExperienceOrb) world.spawn(loc, ExperienceOrb.class)).setExperience(plugin.getConfig().getInt("xp_to_give"));
                                 //p.giveExp(plugin.getConfig().getInt("xp_to_give"));
