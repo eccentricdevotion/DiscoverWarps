@@ -38,7 +38,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("disable");
         admincmds.add("auto");
         admincmds.add("cost");
+        admincmds.add("allow_set_spawn");
         admincmds.add("allow_buying");
+        admincmds.add("xp_on_discover");
         this.usercmds = new ArrayList<String>();
         usercmds.add("tp");
         usercmds.add("list");
@@ -64,6 +66,23 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     boolean bool = !plugin.getConfig().getBoolean("allow_buying");
                     plugin.getConfig().set("allow_buying", bool);
                     sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "allow_buying was set to: " + bool);
+                    if (bool) {
+                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "A server restart will be needed in order to hook DiscoverWarps into your economy plugin");
+                    }
+                    plugin.saveConfig();
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("xp_on_discover")) {
+                    boolean bool = !plugin.getConfig().getBoolean("xp_on_discover");
+                    plugin.getConfig().set("xp_on_discover", bool);
+                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "xp_on_discover was set to: " + bool);
+                    plugin.saveConfig();
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("allow_set_spawn")) {
+                    boolean bool = !plugin.getConfig().getBoolean("allow_set_spawn");
+                    plugin.getConfig().set("allow_set_spawn", bool);
+                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "allow_set_spawn was set to: " + bool);
                     plugin.saveConfig();
                     return true;
                 }
@@ -306,6 +325,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             int x = rsName.getInt("x");
                             int y = rsName.getInt("y");
                             int z = rsName.getInt("z");
+                            boolean auto = rsName.getBoolean("auto");
                             List<String> visited = new ArrayList<String>();
                             // can the player tp to here?
                             String p = player.getName();
@@ -315,7 +335,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             if (rsVisited.isBeforeFirst()) {
                                 visited = Arrays.asList(rsVisited.getString("visited").split(","));
                             }
-                            if (!visited.contains(id)) {
+                            if (!visited.contains(id) && !auto) {
                                 sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You need to discover '" + warp + "' before you can teleport to it!");
                                 return true;
                             }
