@@ -15,6 +15,7 @@
         </repository>
     </repositories>
     <build>
+        <finalName>DiscoverWarps</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
