@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -32,14 +32,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.6-R0.1-SNAPSHOT</version>
+            <version>1.5-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ci.herocraftonline.com</groupId>
             <artifactId>vault</artifactId>
-            <version>1.2.22</version>
+            <version>1.2.24</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
