@@ -34,7 +34,7 @@ public class DiscoverWarpsDatabase {
             statement.executeUpdate(queryWarps);
             String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, player TEXT, visited TEXT)";
             statement.executeUpdate(queryVisited);
-            // update player_prefs if there is no quotes_on column
+            // update discoverwarps if there is no auto column
             String queryAuto = "SELECT sql FROM sqlite_master WHERE tbl_name = 'discoverwarps' AND sql LIKE '%auto INTEGER%'";
             rsNew = statement.executeQuery(queryAuto);
             if (!rsNew.next()) {
