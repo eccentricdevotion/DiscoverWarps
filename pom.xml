@@ -32,14 +32,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.5-R0.1-SNAPSHOT</version>
+            <version>1.5.1-R0.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ci.herocraftonline.com</groupId>
             <artifactId>vault</artifactId>
-            <version>1.2.24</version>
+            <version>1.2.25</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
