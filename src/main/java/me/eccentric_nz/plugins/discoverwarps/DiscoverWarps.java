@@ -20,6 +20,7 @@ public class DiscoverWarps extends JavaPlugin {
     DiscoverWarpsPlateListener plateListener = new DiscoverWarpsPlateListener(this);
     DiscoverWarpsProtectionListener protectionListener = new DiscoverWarpsProtectionListener(this);
     DiscoverWarpsExplodeListener explodeListener = new DiscoverWarpsExplodeListener(this);
+    DiscoverWarpsSignListener signListener = new DiscoverWarpsSignListener(this);
     private Vault vault;
     public Economy economy;
     private FileConfiguration config = null;
@@ -55,6 +56,7 @@ public class DiscoverWarps extends JavaPlugin {
         pm.registerEvents(plateListener, this);
         pm.registerEvents(protectionListener, this);
         pm.registerEvents(explodeListener, this);
+        pm.registerEvents(signListener, this);
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
@@ -67,12 +69,15 @@ public class DiscoverWarps extends JavaPlugin {
         // add allow_buying etc to config if missing
         File myconfigfile = new File(getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(myconfigfile);
-        if (!config.contains("allow_set_spawn")) {
+        if (!config.contains("allow_buying")) {
             this.getConfig().set("allow_buying", false);
             this.getConfig().set("xp_on_discover", false);
             this.getConfig().set("xp_to_give", 3);
             this.saveConfig();
             System.out.println("[DiscoverWarps] Added new config options");
+        }
+        if (!config.contains("sign")) {
+            this.getConfig().set("sign", "DiscoverWarp");
         }
 
         if (getConfig().getBoolean("allow_buying")) {

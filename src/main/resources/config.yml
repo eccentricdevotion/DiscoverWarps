@@ -3,4 +3,5 @@ no_damage_time: 10
 allow_buying: false
 xp_on_discover: false
 xp_to_give: 3
+sign: discoverwarp
 debug: false
