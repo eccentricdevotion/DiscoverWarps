@@ -167,7 +167,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not enable discover plate, " + e);
                     }
                 }
                 if (args[0].equalsIgnoreCase("disable")) {
@@ -187,7 +187,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not disable discover plate, " + e);
                     }
                 }
                 if (args[0].equalsIgnoreCase("auto")) {
@@ -209,7 +209,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not set auto discover plate option, " + e);
                     }
                 }
                 if (args[0].equalsIgnoreCase("cost")) {
@@ -236,7 +236,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not set discover plate cost, " + e);
                     }
                 }
             }
@@ -375,6 +375,12 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 return true;
                             }
                             String p = player.getName();
+                            // check they have sufficient balance
+                            double bal = plugin.economy.getBalance(p);
+                            if (cost > bal) {
+                                player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You don't have enough maney to use this sign!");
+                                return true;
+                            }
                             String id = rsBuy.getString("id");
                             String queryDiscover = "";
                             // check whether they have visited this plate before
@@ -410,7 +416,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         return false;
     }
 
-    private void movePlayer(Player p, Location l, World from) {
+    public void movePlayer(Player p, Location l, World from) {
 
         p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Teleporting...");
 
@@ -419,6 +425,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         final World to = theLocation.getWorld();
         final boolean allowFlight = thePlayer.getAllowFlight();
         final boolean crossWorlds = from != to;
+
+        // adjust location to centre of plate
+        theLocation.setX(l.getX() + 0.5);
+        theLocation.setZ(l.getZ() + 0.5);
 
         // try loading chunk
         World world = l.getWorld();
