@@ -31,14 +31,11 @@ public class DiscoverWarpsSignListener implements Listener {
         Action a = event.getAction();
         Block b = event.getClickedBlock();
         if (a.equals(Action.RIGHT_CLICK_BLOCK) && (b.getType().equals(Material.WALL_SIGN) || b.getType().equals(Material.SIGN_POST))) {
-            plugin.debug("Sign clicked");
             Sign s = (Sign) b.getState();
             if (s.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
-                plugin.debug("It's a DiscoverWarps sign");
                 Player p = event.getPlayer();
                 String name = p.getName();
                 if (p.hasPermission("discoverwarps.use")) {
-                    plugin.debug("Player has permission");
                     String plate = s.getLine(1);
                     Statement statement = null;
                     ResultSet rsPlate = null;
@@ -50,7 +47,6 @@ public class DiscoverWarpsSignListener implements Listener {
                         String getQuery = "SELECT * FROM discoverwarps WHERE name = '" + plate + "'";
                         rsPlate = statement.executeQuery(getQuery);
                         if (rsPlate.next()) {
-                            plugin.debug("Found the plate");
                             // is a discoverplate
                             boolean enabled = rsPlate.getBoolean("enabled");
                             if (enabled) {
@@ -85,6 +81,9 @@ public class DiscoverWarpsSignListener implements Listener {
                                             }
                                             plugin.economy.withdrawPlayer(name, cost);
                                             queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + name + "'";
+                                        } else {
+                                            p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You have not discovered " + warp + " yet!");
+                                            return;
                                         }
                                     }
                                 }
@@ -98,7 +97,6 @@ public class DiscoverWarpsSignListener implements Listener {
                                 l.setYaw(p.getLocation().getYaw());
                                 DiscoverWarpsCommands dwc = new DiscoverWarpsCommands(plugin);
                                 dwc.movePlayer(p, l, p.getLocation().getWorld());
-                                plugin.debug("Warped!");
                                 if (discovered == false) {
                                     p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You have discovered " + warp);
                                 }
@@ -151,7 +149,7 @@ public class DiscoverWarpsSignListener implements Listener {
                     String getQuery = "SELECT * FROM discoverwarps WHERE name = '" + line2 + "'";
                     rsPlate = statement.executeQuery(getQuery);
                     if (!rsPlate.next()) {
-                        player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "There is no DiscoverWrap with that name!");
+                        player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "There is no DiscoverWarp with that name!");
                         event.setCancelled(true);
                         return;
                     }
@@ -161,7 +159,7 @@ public class DiscoverWarpsSignListener implements Listener {
                     }
                     player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Sign set successfully!");
                 } catch (SQLException e) {
-                    plugin.debug("Could not update player's visited data from sign, " + e);
+                    plugin.debug("Could not get data for sign, " + e);
                 } finally {
                     if (rsPlate != null) {
                         try {

@@ -38,6 +38,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("disable");
         admincmds.add("auto");
         admincmds.add("cost");
+        admincmds.add("sign");
         admincmds.add("allow_buying");
         admincmds.add("xp_on_discover");
         this.usercmds = new ArrayList<String>();
@@ -81,6 +82,12 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 if (args.length < 2) {
                     sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Not enough command arguments!");
                     return false;
+                }
+                if (args[0].equalsIgnoreCase("sign")) {
+                    plugin.getConfig().set("sign", args[1]);
+                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "sign was set to: " + args[1]);
+                    plugin.saveConfig();
+                    return true;
                 }
                 if (args[0].equalsIgnoreCase("set")) {
                     if (sender instanceof Player) {
@@ -307,7 +314,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     try {
                         Connection connection = service.getConnection();
                         Statement statement = connection.createStatement();
-                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
+                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "' COLLATE NOCASE";
                         ResultSet rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.next()) {
