@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -82,7 +83,7 @@ public class DiscoverWarpsPlateListener implements Listener {
                                 //p.giveExp(plugin.getConfig().getInt("xp_to_give"));
                             }
                             if (discovered == false) {
-                                p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You have discovered " + warp);
+                                p.sendMessage(ChatColor.GOLD + "[" + plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
                             }
                             rsPlayer.close();
                             rsPlate.close();

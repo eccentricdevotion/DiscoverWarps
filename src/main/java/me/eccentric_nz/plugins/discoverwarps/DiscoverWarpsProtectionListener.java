@@ -45,7 +45,7 @@ public class DiscoverWarpsProtectionListener implements Listener {
                 rsPlate = statement.executeQuery(getQuery);
                 if (rsPlate.isBeforeFirst()) {
                     Player p = event.getPlayer();
-                    p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You cannot break this pressure plate, use " + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET + " to remove it.");
+                    p.sendMessage(ChatColor.GOLD + "[" + plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET + String.format(plugin.getConfig().getString("localisation.no_break"), ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET));
                     event.setCancelled(true);
                 }
             } catch (SQLException e) {

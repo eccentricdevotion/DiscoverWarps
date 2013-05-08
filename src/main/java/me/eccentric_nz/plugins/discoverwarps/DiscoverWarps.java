@@ -8,8 +8,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DiscoverWarps extends JavaPlugin {
@@ -17,13 +18,15 @@ public class DiscoverWarps extends JavaPlugin {
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     private DiscoverWarpsCommands commando;
     PluginManager pm = Bukkit.getServer().getPluginManager();
-    DiscoverWarpsPlateListener plateListener = new DiscoverWarpsPlateListener(this);
-    DiscoverWarpsProtectionListener protectionListener = new DiscoverWarpsProtectionListener(this);
-    DiscoverWarpsExplodeListener explodeListener = new DiscoverWarpsExplodeListener(this);
-    DiscoverWarpsSignListener signListener = new DiscoverWarpsSignListener(this);
+    DiscoverWarpsPlateListener plateListener;
+    DiscoverWarpsProtectionListener protectionListener;
+    DiscoverWarpsExplodeListener explodeListener;
+    DiscoverWarpsSignListener signListener;
     private Vault vault;
     public Economy economy;
     private FileConfiguration config = null;
+    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+    String MY_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
 
     @Override
     public void onDisable() {
@@ -39,8 +42,8 @@ public class DiscoverWarps extends JavaPlugin {
     public void onEnable() {
         if (!getDataFolder().exists()) {
             if (!getDataFolder().mkdir()) {
-                System.err.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Could not create directory!");
-                System.out.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Requires you to manually make the DiscoverWarps/ directory!");
+                console.sendMessage(MY_PLUGIN_NAME + " Could not create directory!");
+                console.sendMessage(MY_PLUGIN_NAME + " Requires you to manually make the DiscoverWarps/ directory!");
             }
             getDataFolder().setWritable(true);
             getDataFolder().setExecutable(true);
@@ -51,12 +54,9 @@ public class DiscoverWarps extends JavaPlugin {
             service.setConnection(path);
             service.createTables();
         } catch (Exception e) {
-            System.err.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
+            console.sendMessage(MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
-        pm.registerEvents(plateListener, this);
-        pm.registerEvents(protectionListener, this);
-        pm.registerEvents(explodeListener, this);
-        pm.registerEvents(signListener, this);
+        registerListeners();
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
@@ -66,19 +66,8 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
-        // add allow_buying etc to config if missing
-        File myconfigfile = new File(getDataFolder(), "config.yml");
-        config = YamlConfiguration.loadConfiguration(myconfigfile);
-        if (!config.contains("allow_buying")) {
-            this.getConfig().set("allow_buying", false);
-            this.getConfig().set("xp_on_discover", false);
-            this.getConfig().set("xp_to_give", 3);
-            this.saveConfig();
-            System.out.println("[DiscoverWarps] Added new config options");
-        }
-        if (!config.contains("sign")) {
-            this.getConfig().set("sign", "DiscoverWarp");
-        }
+        // check config
+        new DiscoverWarpsConfig(this).checkConfig();
 
         if (getConfig().getBoolean("allow_buying")) {
             if (!setupVault()) {
@@ -95,9 +84,9 @@ public class DiscoverWarps extends JavaPlugin {
             vault = (Vault) x;
             return true;
         } else {
-            System.err.println("Vault is required for economy, but wasn't found!");
-            System.err.println("Download it from http://dev.bukkit.org/server-mods/vault/");
-            System.err.println("Disabling plugin.");
+            console.sendMessage("Vault is required for economy, but wasn't found!");
+            console.sendMessage("Download it from http://dev.bukkit.org/server-mods/vault/");
+            console.sendMessage("Disabling plugin.");
             return false;
         }
     }
@@ -117,7 +106,19 @@ public class DiscoverWarps extends JavaPlugin {
 
     public void debug(Object o) {
         if (getConfig().getBoolean("debug") == true) {
-            System.out.println("[DiscoverWarps Debug] " + o);
+            console.sendMessage("[DiscoverWarps Debug] " + o);
         }
+    }
+
+    private void registerListeners() {
+        plateListener = new DiscoverWarpsPlateListener(this);
+        protectionListener = new DiscoverWarpsProtectionListener(this);
+        explodeListener = new DiscoverWarpsExplodeListener(this);
+        signListener = new DiscoverWarpsSignListener(this);
+        pm.registerEvents(plateListener, this);
+        pm.registerEvents(protectionListener, this);
+        pm.registerEvents(explodeListener, this);
+        pm.registerEvents(signListener, this);
+
     }
 }

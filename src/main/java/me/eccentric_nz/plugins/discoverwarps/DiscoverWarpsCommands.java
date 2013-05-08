@@ -28,6 +28,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     List<String> admincmds;
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
+    String plugin_name;
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
         this.plugin = plugin;
@@ -45,6 +46,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         usercmds.add("tp");
         usercmds.add("list");
         usercmds.add("buy");
+        plugin_name = ChatColor.GOLD + "[" + this.plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
     }
 
     @Override
@@ -52,22 +54,34 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
             if (args.length == 0) {
-                sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Help");
+                String HELP =
+                        plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.delete") + ":\n" + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.disable") + ":\n" + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.enable") + ":\n" + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.auto") + ":\n" + ChatColor.GREEN + "/dw auto [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.cost") + ":\n" + ChatColor.GREEN + "/dw cost [name] [amount]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.list") + ":\n" + ChatColor.GREEN + "/dw list" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.warp") + ":\n" + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.buy") + ":\n" + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET
+                        + "\n" + plugin.getConfig().getString("localisation.help.config") + ":\n" + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
+                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.help"));
                 sender.sendMessage("------------");
-                sender.sendMessage(DiscoverWarpsConstants.HELP.split("\n"));
+                sender.sendMessage(HELP.split("\n"));
                 return true;
             }
             if (admincmds.contains(args[0])) {
                 if (!sender.hasPermission("discoverwarps.admin")) {
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You do not have permission to run that command!");
+                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.permission"));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("allow_buying")) {
                     boolean bool = !plugin.getConfig().getBoolean("allow_buying");
                     plugin.getConfig().set("allow_buying", bool);
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "allow_buying was set to: " + bool);
+                    String str_bool = (bool) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
+                    sender.sendMessage(plugin_name + "allow_buying " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
                     if (bool) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "A server restart will be needed in order to hook DiscoverWarps into your economy plugin");
+                        sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.restart"), plugin_name));
                     }
                     plugin.saveConfig();
                     return true;
@@ -75,17 +89,18 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 if (args[0].equalsIgnoreCase("xp_on_discover")) {
                     boolean bool = !plugin.getConfig().getBoolean("xp_on_discover");
                     plugin.getConfig().set("xp_on_discover", bool);
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "xp_on_discover was set to: " + bool);
+                    String str_bool = (bool) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
+                    sender.sendMessage(plugin_name + "xp_on_discover " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
                     plugin.saveConfig();
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Not enough command arguments!");
+                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.arguments"));
                     return false;
                 }
                 if (args[0].equalsIgnoreCase("sign")) {
                     plugin.getConfig().set("sign", args[1]);
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "sign was set to: " + args[1]);
+                    sender.sendMessage(plugin_name + "sign " + String.format(plugin.getConfig().getString("localisation.config"), args[1]));
                     plugin.saveConfig();
                     return true;
                 }
@@ -98,7 +113,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         // check player is standing on pressure plate
                         Material m = b.getType();
                         if (!m.equals(Material.STONE_PLATE)) {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You are not standing on a stone pressure plate");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.not_plate"));
                             return true;
                         }
                         try {
@@ -108,7 +123,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             ResultSet rsName = statement.executeQuery(queryName);
                             // check name is not in use
                             if (rsName.isBeforeFirst()) {
-                                sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "That name is already in use!");
+                                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.name_in_use"));
                                 return true;
                             }
                             String w = b.getLocation().getWorld().getName();
@@ -122,12 +137,12 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             ps.setInt(4, y);
                             ps.setInt(5, z);
                             ps.executeUpdate();
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " added!");
+                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.added"), args[1]));
                         } catch (SQLException e) {
                             plugin.debug("Could not insert new discover plate, " + e);
                         }
                     } else {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Only a player can use the 'set' command!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
                     }
                     return true;
                 }
@@ -147,10 +162,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             statement.executeUpdate(queryDel);
                             Block b = w.getBlockAt(x, y, z);
                             b.setTypeId(0);
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " deleted!");
+                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -167,10 +182,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 1 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " enabled!");
+                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.enabled"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -187,10 +202,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 0 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " enabled!");
+                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.disabled"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -206,13 +221,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         // check name is valid
                         if (rsAuto.next()) {
                             int auto = (rsAuto.getInt("auto") == 1) ? 0 : 1;
-                            String bool = (auto == 1) ? "true" : "false";
+                            String bool = (auto == 1) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
                             String queryDel = "UPDATE discoverwarps SET auto = " + auto + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " auto-discovery is " + bool + "!");
+                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.auto_discover"), args[1]) + " " + bool + "!");
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -231,15 +246,15 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             try {
                                 cost = Integer.parseInt(args[2]);
                             } catch (NumberFormatException nfe) {
-                                sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "The last argument must be a number!");
+                                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.cost"));
                                 return true;
                             }
                             String queryDel = "UPDATE discoverwarps SET cost = " + cost + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "DiscoverPlate " + args[1] + " now costs " + cost + " to buy!");
+                            sender.sendMessage(plugin_name + "DiscoverPlate " + args[1] + " now costs " + cost + " to buy!");
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -249,7 +264,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
             }
             if (usercmds.contains(args[0])) {
                 if (!sender.hasPermission("discoverwarps.use")) {
-                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You do not have permission to run that command!");
+                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.permission"));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("list")) {
@@ -271,13 +286,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         ResultSet rsList = statement.executeQuery(queryList);
                         // check name is valid
                         if (rsList.isBeforeFirst()) {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "List");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.list"));
                             sender.sendMessage("------------");
                             int i = 1;
                             String discovered;
                             while (rsList.next()) {
-                                discovered = (visited.contains(rsList.getString("id"))) ? ChatColor.GREEN + "VISITED" : ChatColor.RED + "NOT VISITED";
-                                String status = (rsList.getBoolean("auto")) ? ChatColor.BLUE + "AUTO" : discovered;
+                                discovered = (visited.contains(rsList.getString("id"))) ? ChatColor.GREEN + plugin.getConfig().getString("localisation.visited") : ChatColor.RED + plugin.getConfig().getString("localisation.not_visited");
+                                String status = (rsList.getBoolean("auto")) ? ChatColor.BLUE + plugin.getConfig().getString("localisation.auto") : discovered;
                                 String warp = rsList.getString("name");
                                 String cost = "";
                                 if (plugin.getConfig().getBoolean("allow_buying") && !visited.contains(rsList.getString("id"))) {
@@ -292,7 +307,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             sender.sendMessage("------------");
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "There are no DiscoverPlates to find!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.none_set"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -304,11 +319,11 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     if (sender instanceof Player) {
                         player = (Player) sender;
                     } else {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "This command requires a player!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
                         return true;
                     }
                     if (args.length < 2) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You need to supply a warp name!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
                     try {
@@ -335,7 +350,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 visited = Arrays.asList(rsVisited.getString("visited").split(","));
                             }
                             if (!visited.contains(id) && !auto) {
-                                sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You need to discover '" + warp + "' before you can teleport to it!");
+                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
                                 return true;
                             }
                             World from = player.getLocation().getWorld();
@@ -345,7 +360,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             movePlayer(player, l, from);
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -354,18 +369,18 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 }
                 if (args[0].equalsIgnoreCase("buy")) {
                     if (!plugin.getConfig().getBoolean("allow_buying")) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You are not allowed to buy DiscoverWarps on this server!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_buying"));
                         return true;
                     }
                     Player player;
                     if (sender instanceof Player) {
                         player = (Player) sender;
                     } else {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "This command requires a player!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
                         return true;
                     }
                     if (args.length < 2) {
-                        sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You need to supply a warp name!");
+                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
                     try {
@@ -378,14 +393,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             boolean firstplate = true;
                             double cost = rsBuy.getDouble("cost");
                             if (cost <= 0) {
-                                sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You cannot buy the location of DiscoverPlate " + args[1] + "!");
+                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
                                 return true;
                             }
                             String p = player.getName();
                             // check they have sufficient balance
                             double bal = plugin.economy.getBalance(p);
                             if (cost > bal) {
-                                player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You don't have enough maney to use this sign!");
+                                player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_money"));
                                 return true;
                             }
                             String id = rsBuy.getString("id");
@@ -398,7 +413,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 String data = rsPlayer.getString("visited");
                                 String[] visited = data.split(",");
                                 if (Arrays.asList(visited).contains(id)) {
-                                    sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You have already discovered " + args[1] + "!");
+                                    sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
                                     return true;
                                 }
                                 queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + p + "'";
@@ -408,10 +423,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                             statement.executeUpdate(queryDiscover);
                             plugin.economy.withdrawPlayer(p, cost);
-                            player.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "You bought the DiscoverPlate location " + args[1] + " for " + cost);
+                            player.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
                             return true;
                         } else {
-                            sender.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Couldn't find a DiscoverPlate with that name!");
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -425,7 +440,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
     public void movePlayer(Player p, Location l, World from) {
 
-        p.sendMessage(DiscoverWarpsConstants.MY_PLUGIN_NAME + "Teleporting...");
+        p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.teleporting") + "...");
 
         final Player thePlayer = p;
         final Location theLocation = l;

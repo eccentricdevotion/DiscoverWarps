@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.bukkit.ChatColor;
 
 public class DiscoverWarpsDatabase {
 
@@ -42,7 +43,7 @@ public class DiscoverWarpsDatabase {
                 String queryAlter2 = "ALTER TABLE discoverwarps ADD cost INTEGER DEFAULT 0";
                 statement.executeUpdate(queryAlter1);
                 statement.executeUpdate(queryAlter2);
-                System.out.println(DiscoverWarpsConstants.MY_PLUGIN_NAME + " Added new fields to database!");
+                System.out.println("[DiscoverWarps] Added new fields to database!");
             }
             rsNew.close();
         } catch (SQLException e) {

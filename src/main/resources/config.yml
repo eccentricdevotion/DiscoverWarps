@@ -1,3 +1,61 @@
+## do not remove or change '%s' as these are needed to insert the warp names and config options
+localisation:
+  plugin_name: DiscoverWarps
+  ## config messages
+  config: was set to %s
+  ## command messages
+  commands:
+    help: Help
+    permission: You do not have permission to run that command!
+    arguments: Not enough command arguments!
+    not_plate: You are not standing on a stone pressure plate
+    name_in_use: That name is already in use!
+    no_plate_name: Couldn't find a DiscoverPlate with that name!
+    only_player: This command requires a player!
+    cost: The last argument must be a number!
+    none_set: There are no DiscoverPlates to find!
+    no_warp_name: You need to supply a warp name!
+    needs_discover: You need to discover %s before you can teleport to it!
+    auto_discover: DiscoverPlate %s auto-discovery is
+    added: DiscoverPlate %s added!
+    enabled: DiscoverPlate %s enabled!
+    disabled: DiscoverPlate %s disabled!
+    deleted: DiscoverPlate %s deleted!
+    str_true: true
+    str_false: false
+    restart: A server restart will be needed in order to hook %s into your economy plugin
+  ## buying messages
+  buying:
+    no_buying: You are not allowed to buy DiscoverWarps on this server!
+    cannot_buy: You cannot buy the location of DiscoverPlate %s!
+    no_money: You don't have enough money to use this sign!
+    no_need: You have already discovered %s!
+    bought: You bought the DiscoverPlate location %s for
+  ## general messages
+  discovered: You have discovered %s
+  teleport: Teleporting
+  list: List
+  visited: VISITED
+  not_visited: NOT VISITED
+  auto: AUTO
+  no_break: You cannot break this pressure plate, use %s to remove it.
+  ## help messages
+  help:
+    set: To set a stone pressure plate as a DiscoverPlate, stand on it and then type
+    delete: To delete a DiscoverPlate type
+    disable: To disable a DiscoverPlate type
+    enable: To enable a DiscoverPlate type
+    auto: To make a DiscoverPlate auto-discovered type
+    cost: To set a cost to buy a DiscoverPlate location type
+    list: To list DiscoverPlates type
+    warp: To warp to a DiscoverPlate type
+    buy: To buy a DiscoverPlate location type
+    config: To toggle DiscoverWarps config settings type
+  ## sign messages
+  signs:
+    no_money: You don't have enough maney to use this sign!
+    needs_discover: You have not discovered %s yet!
+    sign_made: Sign set successfully!
 no_damage: false
 no_damage_time: 10
 allow_buying: false
