@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,16 +24,19 @@ public class DiscoverWarpsPlateListener implements Listener {
 
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
+    List<Material> validBlocks = new ArrayList<Material>();
 
     public DiscoverWarpsPlateListener(DiscoverWarps plugin) {
         this.plugin = plugin;
+        validBlocks.add(Material.WOOD_PLATE);
+        validBlocks.add(Material.STONE_PLATE);
     }
 
     @EventHandler
     public void onPlateStep(PlayerInteractEvent event) {
         Action a = event.getAction();
         Block b = event.getClickedBlock();
-        if (a.equals(Action.PHYSICAL) && b.getType().equals(Material.STONE_PLATE)) {
+        if (a.equals(Action.PHYSICAL) && validBlocks.contains(b.getType())) {
             Player p = event.getPlayer();
             String name = p.getName();
             if (p.hasPermission("discoverwarps.use")) {

@@ -29,6 +29,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     String plugin_name;
+    List<Material> validBlocks = new ArrayList<Material>();
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
         this.plugin = plugin;
@@ -47,6 +48,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         usercmds.add("list");
         usercmds.add("buy");
         plugin_name = ChatColor.GOLD + "[" + this.plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
+        validBlocks.add(Material.WOOD_PLATE);
+        validBlocks.add(Material.STONE_PLATE);
     }
 
     @Override
@@ -112,7 +115,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         Block b = l.getBlock();
                         // check player is standing on pressure plate
                         Material m = b.getType();
-                        if (!m.equals(Material.STONE_PLATE)) {
+                        if (!validBlocks.contains(m)) {
                             sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.not_plate"));
                             return true;
                         }
@@ -440,7 +443,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
     public void movePlayer(Player p, Location l, World from) {
 
-        p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.teleporting") + "...");
+        p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.teleport") + "...");
 
         final Player thePlayer = p;
         final Location theLocation = l;

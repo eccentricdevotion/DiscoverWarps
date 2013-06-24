@@ -36,7 +36,7 @@ public class DiscoverWarpsConfig {
         strOptions.put("localisation.commands.help", "Help");
         strOptions.put("localisation.commands.permission", "You do not have permission to run that command!");
         strOptions.put("localisation.commands.arguments", "Not enough command arguments!");
-        strOptions.put("localisation.commands.not_plate", "You are not standing on a stone pressure plate");
+        strOptions.put("localisation.commands.not_plate", "You are not standing on a pressure plate");
         strOptions.put("localisation.commands.name_in_use", "That name is already in use!");
         strOptions.put("localisation.commands.no_plate_name", "Couldn't find a DiscoverPlate with that name!");
         strOptions.put("localisation.commands.only_player", "This command requires a player!");
@@ -62,7 +62,7 @@ public class DiscoverWarpsConfig {
         strOptions.put("localisation.not_visited", "NOT VISITED");
         strOptions.put("localisation.auto", "AUTO");
         strOptions.put("localisation.no_break", "You cannot break this pressure plate, use %s to remove it.");
-        strOptions.put("localisation.help.set", "To set a stone pressure plate as a DiscoverPlate, stand on it and then type");
+        strOptions.put("localisation.help.set", "To set a stone or wood pressure plate as a DiscoverPlate, stand on it and then type");
         strOptions.put("localisation.help.delete", "To delete a DiscoverPlate type");
         strOptions.put("localisation.help.disable", "To disable a DiscoverPlate type");
         strOptions.put("localisation.help.enable", "To enable a DiscoverPlate type");
@@ -99,6 +99,9 @@ public class DiscoverWarpsConfig {
                 plugin.getConfig().set(entry.getKey(), entry.getValue());
                 i++;
             }
+        }
+        if (config.getString("localisation.commands.not_plate").equals("You are not standing on a stone pressure plate")) {
+            plugin.getConfig().set("localisation.commands.not_plate", "You are not standing on a pressure plate");
         }
         plugin.saveConfig();
         if (i > 0) {

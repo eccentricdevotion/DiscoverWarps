@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,21 +21,24 @@ public class DiscoverWarpsProtectionListener implements Listener {
 
     private DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
+    List<Material> validBlocks = new ArrayList<Material>();
 
     public DiscoverWarpsProtectionListener(DiscoverWarps plugin) {
         this.plugin = plugin;
+        validBlocks.add(Material.WOOD_PLATE);
+        validBlocks.add(Material.STONE_PLATE);
     }
 
     @EventHandler
     public void onPlateBreak(BlockBreakEvent event) {
         Block b = event.getBlock();
         Material m = b.getType();
-        if (m.equals(Material.STONE_PLATE) || b.getRelative(BlockFace.UP).getType().equals(Material.STONE_PLATE)) {
+        if (validBlocks.contains(m) || validBlocks.contains(b.getRelative(BlockFace.UP).getType())) {
             Location l = b.getLocation();
             String w = l.getWorld().getName();
             int x = l.getBlockX();
             int y = l.getBlockY();
-            if (b.getRelative(BlockFace.UP).getType().equals(Material.STONE_PLATE)) {
+            if (validBlocks.contains(b.getRelative(BlockFace.UP).getType())) {
                 y += 1;
             }
             int z = l.getBlockZ();

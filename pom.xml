@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.5.2-R0.2-SNAPSHOT</version>
+            <version>1.5.2-R1.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

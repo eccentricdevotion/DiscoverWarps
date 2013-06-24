@@ -8,7 +8,7 @@ localisation:
     help: Help
     permission: You do not have permission to run that command!
     arguments: Not enough command arguments!
-    not_plate: You are not standing on a stone pressure plate
+    not_plate: You are not standing on a pressure plate
     name_in_use: That name is already in use!
     no_plate_name: Couldn't find a DiscoverPlate with that name!
     only_player: This command requires a player!
@@ -41,7 +41,7 @@ localisation:
   no_break: You cannot break this pressure plate, use %s to remove it.
   ## help messages
   help:
-    set: To set a stone pressure plate as a DiscoverPlate, stand on it and then type
+    set: To set a stone or wood pressure plate as a DiscoverPlate, stand on it and then type
     delete: To delete a DiscoverPlate type
     disable: To disable a DiscoverPlate type
     enable: To enable a DiscoverPlate type
