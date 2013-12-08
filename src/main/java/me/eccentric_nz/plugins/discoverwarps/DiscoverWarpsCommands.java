@@ -1,5 +1,7 @@
 package me.eccentric_nz.plugins.discoverwarps;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,10 +23,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import multiworld.MultiWorldPlugin;
+import multiworld.api.MultiWorldAPI;
+import multiworld.api.MultiWorldWorldData;
+import multiworld.api.flag.FlagName;
 
 public class DiscoverWarpsCommands implements CommandExecutor {
 
-    private DiscoverWarps plugin;
+    private final DiscoverWarps plugin;
     List<String> admincmds;
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
@@ -57,8 +63,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
             if (args.length == 0) {
-                String HELP =
-                        plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET
+                String HELP
+                        = plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET
                         + "\n" + plugin.getConfig().getString("localisation.help.delete") + ":\n" + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET
                         + "\n" + plugin.getConfig().getString("localisation.help.disable") + ":\n" + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET
                         + "\n" + plugin.getConfig().getString("localisation.help.enable") + ":\n" + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET
@@ -318,7 +324,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     }
                 }
                 if (args[0].equalsIgnoreCase("tp")) {
-                    Player player = null;
+                    Player player;
                     if (sender instanceof Player) {
                         player = (Player) sender;
                     } else {
@@ -367,7 +373,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not find discover plate record, " + e);
                     }
                 }
                 if (args[0].equalsIgnoreCase("buy")) {
@@ -449,7 +455,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         final Location theLocation = l;
         final World to = theLocation.getWorld();
         final boolean allowFlight = thePlayer.getAllowFlight();
-        final boolean crossWorlds = from != to;
+        final boolean crossWorlds = (from != to);
+        final boolean isSurvival = checkSurvival(to);
 
         // adjust location to centre of plate
         theLocation.setX(l.getX() + 0.5);
@@ -476,10 +483,37 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 if (plugin.getConfig().getBoolean("no_damage")) {
                     thePlayer.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
                 }
-                if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds)) {
+                if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
                     thePlayer.setAllowFlight(true);
                 }
             }
         }, 10L);
     }
+
+    /**
+     * Checks if the world the player is teleporting to is a SURVIVAL world.
+     *
+     * @param w the world to check
+     * @return true if the world is a SURVIVAL world, otherwise false
+     */
+    private boolean checkSurvival(World w) {
+        boolean bool = false;
+        if (plugin.pm.isPluginEnabled("Multiverse-Core")) {
+            MultiverseCore mv = (MultiverseCore) plugin.pm.getPlugin("Multiverse-Core");
+            MultiverseWorld mvw = mv.getCore().getMVWorldManager().getMVWorld(w);
+            GameMode gm = mvw.getGameMode();
+            if (gm.equals(GameMode.SURVIVAL)) {
+                bool = true;
+            }
+        }
+        if (plugin.pm.isPluginEnabled("MultiWorld")) {
+            MultiWorldAPI mw = ((MultiWorldPlugin) plugin.pm.getPlugin("MultiWorld")).getApi();
+            MultiWorldWorldData mww = mw.getWorld(w.getName());
+            if (!mww.isOptionSet(FlagName.CREATIVEWORLD)) {
+                bool = true;
+            }
+        }
+        return bool;
+    }
+
 }
