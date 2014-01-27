@@ -1,49 +1,52 @@
 package me.eccentric_nz.plugins.discoverwarps;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
-public class DiscoverWarpsPlateListener implements Listener {
+public class DiscoverWarpsMoveListener implements Listener {
 
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    List<Material> validBlocks = new ArrayList<Material>();
+    HashMap<String, List<String>> regionPlayers = new HashMap<String, List<String>>();
+    WorldGuardPlugin wg;
 
-    public DiscoverWarpsPlateListener(DiscoverWarps plugin) {
+    public DiscoverWarpsMoveListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        validBlocks.add(Material.WOOD_PLATE);
-        validBlocks.add(Material.STONE_PLATE);
+        this.wg = (WorldGuardPlugin) plugin.pm.getPlugin("WorldGuard");
+        setupRegionPlayers();
     }
 
     @EventHandler
-    public void onPlateStep(PlayerInteractEvent event) {
-        Action a = event.getAction();
-        Block b = event.getClickedBlock();
-        if (a.equals(Action.PHYSICAL) && validBlocks.contains(b.getType())) {
-            Player p = event.getPlayer();
-            String name = p.getName();
-            if (p.hasPermission("discoverwarps.use")) {
-                Location l = b.getLocation();
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player p = event.getPlayer();
+        String name = p.getName();
+        if (p.hasPermission("discoverwarps.use")) {
+            Location l = event.getTo();
+            RegionManager rm = wg.getRegionManager(l.getWorld());
+            ApplicableRegionSet ars = rm.getApplicableRegions(l);
+            if (ars.size() > 0) {
+                // get the region
+                String region = getRegion(ars);
                 String w = l.getWorld().getName();
-                int x = l.getBlockX();
-                int y = l.getBlockY();
-                int z = l.getBlockZ();
                 boolean discovered = false;
                 boolean firstplate = true;
                 Statement statement = null;
@@ -53,10 +56,19 @@ public class DiscoverWarpsPlateListener implements Listener {
                     Connection connection = service.getConnection();
                     statement = connection.createStatement();
                     // get their current gamemode inventory from database
-                    String getQuery = "SELECT * FROM discoverwarps WHERE world = '" + w + "' AND x = " + x + " AND y = " + y + " AND z = " + z;
+                    String getQuery = "SELECT * FROM discoverwarps WHERE world = '" + w + "' AND region = '" + region + "'";
                     rsPlate = statement.executeQuery(getQuery);
-                    if (rsPlate.next()) {
-                        // is a discoverplate
+                    if (rsPlate.next() && (!regionPlayers.containsKey(name) || !regionPlayers.get(name).contains(region))) {
+                        // add region to the player's list
+                        List<String> theList;
+                        if (regionPlayers.containsKey(name)) {
+                            theList = regionPlayers.get(name);
+                        } else {
+                            theList = new ArrayList<String>();
+                        }
+                        theList.add(region);
+                        regionPlayers.put(name, theList);
+                        // found a discoverplate
                         boolean enabled = rsPlate.getBoolean("enabled");
                         if (enabled) {
                             String id = rsPlate.getString("id");
@@ -73,11 +85,11 @@ public class DiscoverWarpsPlateListener implements Listener {
                                     discovered = true;
                                 }
                                 if (discovered == false) {
-                                    queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + name + "'";
+                                    queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "', regions = '" + rsPlayer.getString("regions") + "," + region + "' WHERE player = '" + name + "'";
                                 }
                             }
                             if (discovered == false && firstplate == true) {
-                                queryDiscover = "INSERT INTO players (player, visited) VALUES ('" + name + "','" + id + "')";
+                                queryDiscover = "INSERT INTO players (player, visited, regions) VALUES ('" + name + "','" + id + "','" + region + "')";
                             }
                             statement.executeUpdate(queryDiscover);
                             if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
@@ -85,7 +97,6 @@ public class DiscoverWarpsPlateListener implements Listener {
                                 loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
                                 ((ExperienceOrb) world.spawn(loc, ExperienceOrb.class)).setExperience(plugin.getConfig().getInt("xp_to_give"));
-                                //p.giveExp(plugin.getConfig().getInt("xp_to_give"));
                             }
                             if (discovered == false) {
                                 p.sendMessage(ChatColor.GOLD + "[" + plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
@@ -117,6 +128,63 @@ public class DiscoverWarpsPlateListener implements Listener {
                         } catch (SQLException e) {
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets the innermost region of a set of WorldGuard regions.
+     *
+     * @param ars The WorldGuard ApplicableRegionSet to search
+     * @return the region name
+     */
+    public static String getRegion(ApplicableRegionSet ars) {
+        LinkedList< String> parentNames = new LinkedList< String>();
+        LinkedList< String> regions = new LinkedList< String>();
+        for (ProtectedRegion pr : ars) {
+            String id = pr.getId();
+            regions.add(id);
+            ProtectedRegion parent = pr.getParent();
+            while (parent != null) {
+                parentNames.add(parent.getId());
+                parent = parent.getParent();
+            }
+        }
+        for (String name : parentNames) {
+            regions.remove(name);
+        }
+        return regions.getFirst();
+    }
+
+    private void setupRegionPlayers() {
+        // get regions players have visited
+        ResultSet rs = null;
+        Statement statement = null;
+        try {
+            Connection connection = service.getConnection();
+            statement = connection.createStatement();
+            String query = "SELECT player, regions FROM players";
+            rs = statement.executeQuery(query);
+            if (rs.isBeforeFirst()) {
+                while (rs.next()) {
+                    List<String> regions = Arrays.asList(rs.getString("regions").split(","));
+                    regionPlayers.put(rs.getString("player"), regions);
+                }
+            }
+        } catch (SQLException e) {
+            plugin.debug("Could not get region lists!");
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException ex) {
                 }
             }
         }

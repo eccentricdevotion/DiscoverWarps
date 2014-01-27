@@ -114,19 +114,19 @@ public class DiscoverWarpsSignListener implements Listener {
                         if (rsPlayer != null) {
                             try {
                                 rsPlayer.close();
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
                             }
                         }
                         if (rsPlate != null) {
                             try {
                                 rsPlate.close();
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
                             }
                         }
                         if (statement != null) {
                             try {
                                 statement.close();
-                            } catch (Exception e) {
+                            } catch (SQLException e) {
                             }
                         }
                     }
@@ -167,13 +167,13 @@ public class DiscoverWarpsSignListener implements Listener {
                     if (rsPlate != null) {
                         try {
                             rsPlate.close();
-                        } catch (Exception e) {
+                        } catch (SQLException e) {
                         }
                     }
                     if (statement != null) {
                         try {
                             statement.close();
-                        } catch (Exception e) {
+                        } catch (SQLException e) {
                         }
                     }
                 }

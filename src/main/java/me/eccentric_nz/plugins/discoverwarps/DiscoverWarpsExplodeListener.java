@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class DiscoverWarpsExplodeListener implements Listener {
 
-    private DiscoverWarps plugin;
+    private final DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
 
     public DiscoverWarpsExplodeListener(DiscoverWarps plugin) {
@@ -59,14 +59,14 @@ public class DiscoverWarpsExplodeListener implements Listener {
             if (rsWarpBlocks != null) {
                 try {
                     rsWarpBlocks.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                 }
             }
             if (statement != null) {
                 try {
 
                     statement.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                 }
             }
         }

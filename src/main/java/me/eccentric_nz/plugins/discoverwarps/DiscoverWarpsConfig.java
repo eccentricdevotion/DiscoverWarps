@@ -23,6 +23,7 @@ public class DiscoverWarpsConfig {
         boolOptions.put("no_damage", false);
         boolOptions.put("allow_buying", false);
         boolOptions.put("xp_on_discover", false);
+        boolOptions.put("worldguard_regions", true);
         boolOptions.put("debug", false);
         boolOptions.put("localisation.commands.str_true", true);
         boolOptions.put("localisation.commands.str_false", false);
@@ -62,6 +63,7 @@ public class DiscoverWarpsConfig {
         strOptions.put("localisation.not_visited", "NOT VISITED");
         strOptions.put("localisation.auto", "AUTO");
         strOptions.put("localisation.no_break", "You cannot break this pressure plate, use %s to remove it.");
+        strOptions.put("localisation.region_found", "WorldGuard region '%s' found, region detection will be enabled for this pressure plate.");
         strOptions.put("localisation.help.set", "To set a stone or wood pressure plate as a DiscoverPlate, stand on it and then type");
         strOptions.put("localisation.help.delete", "To delete a DiscoverPlate type");
         strOptions.put("localisation.help.disable", "To disable a DiscoverPlate type");

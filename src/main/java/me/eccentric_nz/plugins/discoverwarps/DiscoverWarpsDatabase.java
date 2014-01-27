@@ -5,11 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.bukkit.ChatColor;
 
 public class DiscoverWarpsDatabase {
 
-    private static DiscoverWarpsDatabase instance = new DiscoverWarpsDatabase();
+    private static final DiscoverWarpsDatabase instance = new DiscoverWarpsDatabase();
     public Connection connection = null;
     public Statement statement = null;
     private DiscoverWarps plugin;
@@ -29,11 +28,13 @@ public class DiscoverWarpsDatabase {
 
     public void createTables() {
         ResultSet rsNew = null;
+        ResultSet rsWG = null;
+        ResultSet rsRegions = null;
         try {
             statement = connection.createStatement();
             String queryWarps = "CREATE TABLE IF NOT EXISTS discoverwarps (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT COLLATE NOCASE, world TEXT, x INTEGER, y INTEGER, z INTEGER, enabled INTEGER, auto INTEGER DEFAULT 0, cost INTEGER DEFAULT 0)";
             statement.executeUpdate(queryWarps);
-            String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, player TEXT COLLATE NOCASE, visited TEXT)";
+            String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, player TEXT COLLATE NOCASE, visited TEXT, regions TEXT)";
             statement.executeUpdate(queryVisited);
             // update discoverwarps if there is no auto column
             String queryAuto = "SELECT sql FROM sqlite_master WHERE tbl_name = 'discoverwarps' AND sql LIKE '%auto INTEGER%'";
@@ -46,19 +47,47 @@ public class DiscoverWarpsDatabase {
                 System.out.println("[DiscoverWarps] Added new fields to database!");
             }
             rsNew.close();
+            // update discoverwarps if there is no region column
+            String queryWG = "SELECT sql FROM sqlite_master WHERE tbl_name = 'discoverwarps' AND sql LIKE '%region TEXT%'";
+            rsWG = statement.executeQuery(queryWG);
+            if (!rsWG.next()) {
+                String queryAlterWG = "ALTER TABLE discoverwarps ADD region TEXT DEFAULT ''";
+                statement.executeUpdate(queryAlterWG);
+            }
+            rsWG.close();
+            // update players if there is no regions column
+            String queryRegions = "SELECT sql FROM sqlite_master WHERE tbl_name = 'players' AND sql LIKE '%regions TEXT%'";
+            rsRegions = statement.executeQuery(queryRegions);
+            if (!rsRegions.next()) {
+                String queryAlterRegions = "ALTER TABLE players ADD regions TEXT DEFAULT ''";
+                statement.executeUpdate(queryAlterRegions);
+            }
+            rsRegions.close();
         } catch (SQLException e) {
             plugin.debug("Create table error: " + e);
         } finally {
             if (rsNew != null) {
                 try {
                     rsNew.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
+                }
+            }
+            if (rsWG != null) {
+                try {
+                    rsWG.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (rsRegions != null) {
+                try {
+                    rsRegions.close();
+                } catch (SQLException e) {
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                 }
             }
         }

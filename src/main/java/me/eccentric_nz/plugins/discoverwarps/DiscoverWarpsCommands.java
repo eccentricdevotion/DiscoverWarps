@@ -2,6 +2,10 @@ package me.eccentric_nz.plugins.discoverwarps;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +13,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import multiworld.MultiWorldPlugin;
+import multiworld.api.MultiWorldAPI;
+import multiworld.api.MultiWorldWorldData;
+import multiworld.api.flag.FlagName;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -23,10 +32,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import multiworld.MultiWorldPlugin;
-import multiworld.api.MultiWorldAPI;
-import multiworld.api.MultiWorldWorldData;
-import multiworld.api.flag.FlagName;
 
 public class DiscoverWarpsCommands implements CommandExecutor {
 
@@ -125,11 +130,38 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.not_plate"));
                             return true;
                         }
+                        String region_name = "";
+                        // check if the plate is inside a WorldGuard region
+                        if (plugin.getConfig().getBoolean("worldguard_regions") && plugin.pm.isPluginEnabled("WorldGuard")) {
+                            WorldGuardPlugin wg = (WorldGuardPlugin) plugin.pm.getPlugin("WorldGuard");
+                            RegionManager rm = wg.getRegionManager(l.getWorld());
+                            ApplicableRegionSet ars = rm.getApplicableRegions(l);
+                            if (ars.size() > 0) {
+                                LinkedList< String> parentNames = new LinkedList< String>();
+                                LinkedList< String> regions = new LinkedList< String>();
+                                for (ProtectedRegion pr : ars) {
+                                    String id = pr.getId();
+                                    regions.add(id);
+                                    ProtectedRegion parent = pr.getParent();
+                                    while (parent != null) {
+                                        parentNames.add(parent.getId());
+                                        parent = parent.getParent();
+                                    }
+                                }
+                                for (String name : parentNames) {
+                                    regions.remove(name);
+                                }
+                                region_name = regions.getFirst();
+                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.region_found"), region_name));
+                            }
+                        }
+                        Statement statement = null;
+                        ResultSet rsName = null;
                         try {
                             Connection connection = service.getConnection();
-                            Statement statement = connection.createStatement();
+                            statement = connection.createStatement();
                             String queryName = "SELECT name FROM discoverwarps WHERE name = '" + args[1] + "'";
-                            ResultSet rsName = statement.executeQuery(queryName);
+                            rsName = statement.executeQuery(queryName);
                             // check name is not in use
                             if (rsName.isBeforeFirst()) {
                                 sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.name_in_use"));
@@ -139,16 +171,30 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             int x = b.getLocation().getBlockX();
                             int y = b.getLocation().getBlockY();
                             int z = b.getLocation().getBlockZ();
-                            PreparedStatement ps = connection.prepareStatement("INSERT INTO discoverwarps (name, world, x, y, z, enabled) VALUES (?, ?, ?, ?, ?, 1)");
+                            PreparedStatement ps = connection.prepareStatement("INSERT INTO discoverwarps (name, world, x, y, z, enabled, region) VALUES (?, ?, ?, ?, ?, 1, ?)");
                             ps.setString(1, args[1]);
                             ps.setString(2, w);
                             ps.setInt(3, x);
                             ps.setInt(4, y);
                             ps.setInt(5, z);
+                            ps.setString(6, region_name);
                             ps.executeUpdate();
                             sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.added"), args[1]));
                         } catch (SQLException e) {
                             plugin.debug("Could not insert new discover plate, " + e);
+                        } finally {
+                            if (rsName != null) {
+                                try {
+                                    rsName.close();
+                                } catch (SQLException ex) {
+                                }
+                            }
+                            if (statement != null) {
+                                try {
+                                    statement.close();
+                                } catch (SQLException ex) {
+                                }
+                            }
                         }
                     } else {
                         sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
@@ -156,11 +202,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("delete")) {
+                    Statement statement = null;
+                    ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsName = statement.executeQuery(queryName);
+                        rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.next()) {
                             World w = plugin.getServer().getWorld(rsName.getString("world"));
@@ -179,14 +227,29 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not delete discover plate, " + e);
+                    } finally {
+                        if (rsName != null) {
+                            try {
+                                rsName.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("enable")) {
+                    Statement statement = null;
+                    ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryName = "SELECT name FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsName = statement.executeQuery(queryName);
+                        rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 1 WHERE name = '" + args[1] + "'";
@@ -199,14 +262,29 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not enable discover plate, " + e);
+                    } finally {
+                        if (rsName != null) {
+                            try {
+                                rsName.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("disable")) {
+                    Statement statement = null;
+                    ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryName = "SELECT name FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsName = statement.executeQuery(queryName);
+                        rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 0 WHERE name = '" + args[1] + "'";
@@ -222,11 +300,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     }
                 }
                 if (args[0].equalsIgnoreCase("auto")) {
+                    Statement statement = null;
+                    ResultSet rsAuto = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryAuto = "SELECT name, auto FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsAuto = statement.executeQuery(queryAuto);
+                        rsAuto = statement.executeQuery(queryAuto);
                         // check name is valid
                         if (rsAuto.next()) {
                             int auto = (rsAuto.getInt("auto") == 1) ? 0 : 1;
@@ -241,14 +321,29 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not set auto discover plate option, " + e);
+                    } finally {
+                        if (rsAuto != null) {
+                            try {
+                                rsAuto.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("cost")) {
+                    Statement statement = null;
+                    ResultSet rsCost = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryCost = "SELECT name FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsCost = statement.executeQuery(queryCost);
+                        rsCost = statement.executeQuery(queryCost);
                         // check name is valid
                         if (rsCost.isBeforeFirst()) {
                             int cost;
@@ -268,6 +363,19 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not set discover plate cost, " + e);
+                    } finally {
+                        if (rsCost != null) {
+                            try {
+                                rsCost.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
             }
@@ -277,9 +385,11 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("list")) {
+                    Statement statement = null;
+                    ResultSet rsList = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         List<String> visited = new ArrayList<String>();
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
@@ -292,7 +402,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                         }
                         String queryList = "SELECT id, name, auto, cost FROM discoverwarps WHERE enabled = 1";
-                        ResultSet rsList = statement.executeQuery(queryList);
+                        rsList = statement.executeQuery(queryList);
                         // check name is valid
                         if (rsList.isBeforeFirst()) {
                             sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.list"));
@@ -321,6 +431,19 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not list discover plates, " + e);
+                    } finally {
+                        if (rsList != null) {
+                            try {
+                                rsList.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("tp")) {
@@ -335,11 +458,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
+                    Statement statement = null;
+                    ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "' COLLATE NOCASE";
-                        ResultSet rsName = statement.executeQuery(queryName);
+                        rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.next()) {
                             String id = rsName.getString("id");
@@ -374,6 +499,19 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not find discover plate record, " + e);
+                    } finally {
+                        if (rsName != null) {
+                            try {
+                                rsName.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("buy")) {
@@ -392,11 +530,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
+                    Statement statement = null;
+                    ResultSet rsBuy = null;
                     try {
                         Connection connection = service.getConnection();
-                        Statement statement = connection.createStatement();
+                        statement = connection.createStatement();
                         String queryBuy = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        ResultSet rsBuy = statement.executeQuery(queryBuy);
+                        rsBuy = statement.executeQuery(queryBuy);
                         // check name is valid
                         if (rsBuy.next()) {
                             boolean firstplate = true;
@@ -440,6 +580,19 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not buy discover plate, " + e);
+                    } finally {
+                        if (rsBuy != null) {
+                            try {
+                                rsBuy.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
             }

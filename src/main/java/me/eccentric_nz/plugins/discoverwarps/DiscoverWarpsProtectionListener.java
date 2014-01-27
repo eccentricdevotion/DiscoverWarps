@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class DiscoverWarpsProtectionListener implements Listener {
 
-    private DiscoverWarps plugin;
+    private final DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     List<Material> validBlocks = new ArrayList<Material>();
 
@@ -60,14 +59,14 @@ public class DiscoverWarpsProtectionListener implements Listener {
                 if (rsPlate != null) {
                     try {
                         rsPlate.close();
-                    } catch (Exception e) {
+                    } catch (SQLException e) {
                     }
                 }
                 if (statement != null) {
                     try {
 
                         statement.close();
-                    } catch (Exception e) {
+                    } catch (SQLException e) {
                     }
                 }
             }

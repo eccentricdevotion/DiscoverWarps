@@ -2,30 +2,24 @@ package me.eccentric_nz.plugins.discoverwarps;
 
 import java.io.File;
 import java.io.IOException;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import java.sql.SQLException;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DiscoverWarps extends JavaPlugin {
 
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     private DiscoverWarpsCommands commando;
-    PluginManager pm = Bukkit.getServer().getPluginManager();
-    DiscoverWarpsPlateListener plateListener;
-    DiscoverWarpsProtectionListener protectionListener;
-    DiscoverWarpsExplodeListener explodeListener;
-    DiscoverWarpsSignListener signListener;
+    PluginManager pm = getServer().getPluginManager();
     private Vault vault;
     public Economy economy;
-    private FileConfiguration config = null;
-    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+    ConsoleCommandSender console;
     String MY_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
 
     @Override
@@ -33,13 +27,14 @@ public class DiscoverWarps extends JavaPlugin {
         this.saveConfig();
         try {
             service.connection.close();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             debug("Could not close database connection: " + e);
         }
     }
 
     @Override
     public void onEnable() {
+        console = getServer().getConsoleSender();
         if (!getDataFolder().exists()) {
             if (!getDataFolder().mkdir()) {
                 console.sendMessage(MY_PLUGIN_NAME + " Could not create directory!");
@@ -56,7 +51,8 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (Exception e) {
             console.sendMessage(MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
-        registerListeners();
+        // check config
+        new DiscoverWarpsConfig(this).checkConfig();
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
@@ -66,8 +62,8 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (IOException e) {
             // Failed to submit the stats :-(
         }
-        // check config
-        new DiscoverWarpsConfig(this).checkConfig();
+
+        registerListeners();
 
         if (getConfig().getBoolean("allow_buying")) {
             if (!setupVault()) {
@@ -111,14 +107,12 @@ public class DiscoverWarps extends JavaPlugin {
     }
 
     private void registerListeners() {
-        plateListener = new DiscoverWarpsPlateListener(this);
-        protectionListener = new DiscoverWarpsProtectionListener(this);
-        explodeListener = new DiscoverWarpsExplodeListener(this);
-        signListener = new DiscoverWarpsSignListener(this);
-        pm.registerEvents(plateListener, this);
-        pm.registerEvents(protectionListener, this);
-        pm.registerEvents(explodeListener, this);
-        pm.registerEvents(signListener, this);
-
+        if (pm.isPluginEnabled("WorldGuard")) {
+            pm.registerEvents(new DiscoverWarpsMoveListener(this), this);
+        }
+        pm.registerEvents(new DiscoverWarpsPlateListener(this), this);
+        pm.registerEvents(new DiscoverWarpsProtectionListener(this), this);
+        pm.registerEvents(new DiscoverWarpsExplodeListener(this), this);
+        pm.registerEvents(new DiscoverWarpsSignListener(this), this);
     }
 }

@@ -39,6 +39,7 @@ localisation:
   not_visited: NOT VISITED
   auto: AUTO
   no_break: You cannot break this pressure plate, use %s to remove it.
+  region_found: WorldGuard region '%s' found, region detection will be enabled for this pressure plate.
   ## help messages
   help:
     set: To set a stone or wood pressure plate as a DiscoverPlate, stand on it and then type
@@ -62,4 +63,5 @@ allow_buying: false
 xp_on_discover: false
 xp_to_give: 3
 sign: discoverwarp
+worldguard_regions: true
 debug: false
