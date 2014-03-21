@@ -466,8 +466,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (args.length == 4 && args[3].toLowerCase().equals("true")) {
                             must_discover = false;
                         }
-//                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
-//                        return true;
                     }
                     if (args.length < 2) {
                         sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
