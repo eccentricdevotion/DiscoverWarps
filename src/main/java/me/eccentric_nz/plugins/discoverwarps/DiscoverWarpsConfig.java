@@ -40,6 +40,7 @@ public class DiscoverWarpsConfig {
         strOptions.put("localisation.commands.not_plate", "You are not standing on a pressure plate");
         strOptions.put("localisation.commands.name_in_use", "That name is already in use!");
         strOptions.put("localisation.commands.no_plate_name", "Couldn't find a DiscoverPlate with that name!");
+        strOptions.put("localisation.commands.no_player", "There is no player with that name online!");
         strOptions.put("localisation.commands.only_player", "This command requires a player!");
         strOptions.put("localisation.commands.cost", "The last argument must be a number!");
         strOptions.put("localisation.commands.none_set", "There are no DiscoverPlates to find!");

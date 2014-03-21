@@ -448,11 +448,26 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 }
                 if (args[0].equalsIgnoreCase("tp")) {
                     Player player;
+                    boolean must_discover = true;
                     if (sender instanceof Player) {
                         player = (Player) sender;
                     } else {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
-                        return true;
+                        // tp specified player to specified warp
+                        if (args.length < 3) {
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.arguments"));
+                            return true;
+                        }
+                        // check the player
+                        player = plugin.getServer().getPlayerExact(args[2]);
+                        if (player == null || !player.isOnline()) {
+                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_player"));
+                            return true;
+                        }
+                        if (args.length == 4 && args[3].toLowerCase().equals("true")) {
+                            must_discover = false;
+                        }
+//                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
+//                        return true;
                     }
                     if (args.length < 2) {
                         sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
@@ -474,18 +489,20 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             int y = rsName.getInt("y");
                             int z = rsName.getInt("z");
                             boolean auto = rsName.getBoolean("auto");
-                            List<String> visited = new ArrayList<String>();
-                            // can the player tp to here?
-                            String p = player.getName();
-                            // get players visited plates
-                            String queryVisited = "SELECT visited FROM players WHERE player = '" + p + "'";
-                            ResultSet rsVisited = statement.executeQuery(queryVisited);
-                            if (rsVisited.isBeforeFirst()) {
-                                visited = Arrays.asList(rsVisited.getString("visited").split(","));
-                            }
-                            if (!visited.contains(id) && !auto) {
-                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
-                                return true;
+                            if (must_discover) {
+                                List<String> visited = new ArrayList<String>();
+                                // can the player tp to here?
+                                String p = player.getName();
+                                // get players visited plates
+                                String queryVisited = "SELECT visited FROM players WHERE player = '" + p + "'";
+                                ResultSet rsVisited = statement.executeQuery(queryVisited);
+                                if (rsVisited.isBeforeFirst()) {
+                                    visited = Arrays.asList(rsVisited.getString("visited").split(","));
+                                }
+                                if (!visited.contains(id) && !auto) {
+                                    sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
+                                    return true;
+                                }
                             }
                             World from = player.getLocation().getWorld();
                             Location l = new Location(w, x, y, z);
