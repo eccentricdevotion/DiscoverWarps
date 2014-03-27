@@ -9,10 +9,10 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
-        <repository>
+        <!--<repository>
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public</url>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>multiworld</groupId>
             <artifactId>MultiWorld</artifactId>
-            <version>5.0.0</version>
+            <version>5.1.1</version>
             <type>jar</type>
         </dependency>
         <dependency>

@@ -1,4 +1,4 @@
-package me.eccentric_nz.plugins.discoverwarps;
+package me.eccentric_nz.discoverwarps;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;

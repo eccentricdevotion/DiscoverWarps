@@ -1,4 +1,4 @@
-package me.eccentric_nz.plugins.discoverwarps;
+package me.eccentric_nz.discoverwarps;
 
 /*
  * Copyright 2011 Tyler Blair. All rights reserved.

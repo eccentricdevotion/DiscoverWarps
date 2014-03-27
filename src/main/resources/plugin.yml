@@ -1,7 +1,7 @@
 author: eccentric_nz
 dev-url: http://dev.bukkit.org/server-mods/discoverwarps/
 description: Adds Skyrim type warps to Minecraft Server
-main: me.eccentric_nz.plugins.discoverwarps.DiscoverWarps
+main: me.eccentric_nz.discoverwarps.DiscoverWarps
 name: DiscoverWarps
 load: POSTWORLD
 version: '1.3'

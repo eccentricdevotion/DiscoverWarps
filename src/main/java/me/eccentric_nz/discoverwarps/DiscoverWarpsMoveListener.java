@@ -1,4 +1,4 @@
-package me.eccentric_nz.plugins.discoverwarps;
+package me.eccentric_nz.discoverwarps;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;

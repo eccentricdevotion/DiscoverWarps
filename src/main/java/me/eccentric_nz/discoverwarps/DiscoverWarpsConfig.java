@@ -1,4 +1,4 @@
-package me.eccentric_nz.plugins.discoverwarps;
+package me.eccentric_nz.discoverwarps;
 
 import java.io.File;
 import java.util.HashMap;
