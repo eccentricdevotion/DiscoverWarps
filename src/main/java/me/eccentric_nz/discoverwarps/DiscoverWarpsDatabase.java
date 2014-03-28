@@ -34,7 +34,7 @@ public class DiscoverWarpsDatabase {
             statement = connection.createStatement();
             String queryWarps = "CREATE TABLE IF NOT EXISTS discoverwarps (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT COLLATE NOCASE, world TEXT, x INTEGER, y INTEGER, z INTEGER, enabled INTEGER, auto INTEGER DEFAULT 0, cost INTEGER DEFAULT 0)";
             statement.executeUpdate(queryWarps);
-            String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, player TEXT COLLATE NOCASE, visited TEXT, regions TEXT)";
+            String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, player TEXT COLLATE NOCASE DEFAULT '', visited TEXT DEFAULT '', regions TEXT DEFAULT '')";
             statement.executeUpdate(queryVisited);
             // update discoverwarps if there is no auto column
             String queryAuto = "SELECT sql FROM sqlite_master WHERE tbl_name = 'discoverwarps' AND sql LIKE '%auto INTEGER%'";

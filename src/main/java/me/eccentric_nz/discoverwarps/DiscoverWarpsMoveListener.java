@@ -181,10 +181,13 @@ public class DiscoverWarpsMoveListener implements Listener {
             statement = connection.createStatement();
             String query = "SELECT player, regions FROM players";
             rs = statement.executeQuery(query);
-            if (rs.isBeforeFirst()) {
+            if (rs != null && rs.isBeforeFirst()) {
                 while (rs.next()) {
-                    List<String> regions = Arrays.asList(rs.getString("regions").split(","));
-                    regionPlayers.put(rs.getString("player"), regions);
+                    String r = rs.getString("regions");
+                    if (!rs.wasNull()) {
+                        List<String> regions = Arrays.asList(r.split(","));
+                        regionPlayers.put(rs.getString("player"), regions);
+                    }
                 }
             }
         } catch (SQLException e) {
