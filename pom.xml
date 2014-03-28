@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -22,6 +22,22 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <repositories>
+                <repository>
+                    <id>macgeek</id>
+                    <url>file:///Users/macgeek/maven/repo</url>
+                </repository>
+            </repositories>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
     <build>
         <finalName>DiscoverWarps</finalName>
         <plugins>
