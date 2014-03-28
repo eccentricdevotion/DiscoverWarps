@@ -41,6 +41,21 @@ public class DiscoverWarpsMoveListener implements Listener {
         String name = p.getName();
         if (p.hasPermission("discoverwarps.use")) {
             Location l = event.getTo();
+            Location loc = p.getLocation(); // Grab Location
+
+            /**
+             * Copyright (c) 2011, The Multiverse Team All rights reserved.
+             * Check the Player has actually moved a block to prevent unneeded
+             * calculations... This is to prevent huge performance drops on high
+             * player count servers.
+             */
+            DiscoverWarpsSession dws = plugin.getDiscoverWarpsSession(p);
+            dws.setStaleLocation(loc);
+
+            // If the location is stale, ie: the player isn't actually moving xyz coords, they're looking around
+            if (dws.isStaleLocation()) {
+                return;
+            }
             RegionManager rm = wg.getRegionManager(l.getWorld());
             ApplicableRegionSet ars = rm.getApplicableRegions(l);
             if (ars.size() > 0) {
@@ -93,7 +108,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                             }
                             statement.executeUpdate(queryDiscover);
                             if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
-                                Location loc = p.getLocation();
+//                                Location loc = p.getLocation();
                                 loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
                                 ((ExperienceOrb) world.spawn(loc, ExperienceOrb.class)).setExperience(plugin.getConfig().getInt("xp_to_give"));

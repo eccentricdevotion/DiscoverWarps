@@ -1,12 +1,16 @@
+ /* Portions of this code are copyright (c) 2011, The Multiverse Team All rights reserved. */
 package me.eccentric_nz.discoverwarps;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -21,6 +25,7 @@ public class DiscoverWarps extends JavaPlugin {
     public Economy economy;
     ConsoleCommandSender console;
     String MY_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
+    private Map<String, DiscoverWarpsSession> discoverWarpSessions;
 
     @Override
     public void onDisable() {
@@ -72,6 +77,7 @@ public class DiscoverWarps extends JavaPlugin {
             }
             setupEconomy();
         }
+        this.discoverWarpSessions = new HashMap<String, DiscoverWarpsSession>();
     }
 
     private boolean setupVault() {
@@ -114,5 +120,14 @@ public class DiscoverWarps extends JavaPlugin {
         pm.registerEvents(new DiscoverWarpsProtectionListener(this), this);
         pm.registerEvents(new DiscoverWarpsExplodeListener(this), this);
         pm.registerEvents(new DiscoverWarpsSignListener(this), this);
+    }
+
+    public DiscoverWarpsSession getDiscoverWarpsSession(Player p) {
+        if (this.discoverWarpSessions.containsKey(p.getName())) {
+            return this.discoverWarpSessions.get(p.getName());
+        }
+        DiscoverWarpsSession session = new DiscoverWarpsSession(p);
+        this.discoverWarpSessions.put(p.getName(), session);
+        return session;
     }
 }
