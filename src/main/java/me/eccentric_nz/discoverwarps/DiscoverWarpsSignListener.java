@@ -37,7 +37,7 @@ public class DiscoverWarpsSignListener implements Listener {
             Sign s = (Sign) b.getState();
             if (s.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
                 Player p = event.getPlayer();
-                String name = p.getName();
+                String uuid = p.getUniqueId().toString();
                 if (p.hasPermission("discoverwarps.use")) {
                     String plate = s.getLine(1);
                     Statement statement = null;
@@ -62,7 +62,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                 double cost = rsPlate.getDouble("cost");
                                 String queryDiscover = "";
                                 // check whether they have visited this plate before
-                                String queryPlayer = "SELECT * FROM players WHERE player = '" + name + "'";
+                                String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
                                 rsPlayer = statement.executeQuery(queryPlayer);
                                 boolean firstplate = true;
                                 boolean discovered = false;
@@ -77,13 +77,13 @@ public class DiscoverWarpsSignListener implements Listener {
                                         // check if there is a cost
                                         if (cost > 0 && plugin.getConfig().getBoolean("allow_buying")) {
                                             // check if they have sufficient balance
-                                            double bal = plugin.economy.getBalance(name);
+                                            double bal = plugin.economy.getBalance(uuid);
                                             if (cost > bal) {
                                                 p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.signs.no_money"));
                                                 return;
                                             }
-                                            plugin.economy.withdrawPlayer(name, cost);
-                                            queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + name + "'";
+                                            plugin.economy.withdrawPlayer(uuid, cost);
+                                            queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                         } else {
                                             p.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));
                                             return;
@@ -91,7 +91,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                     }
                                 }
                                 if (discovered == false && firstplate == true) {
-                                    queryDiscover = "INSERT INTO players (player, visited) VALUES ('" + name + "','" + id + "')";
+                                    queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                                 }
                                 statement.executeUpdate(queryDiscover);
                                 // warp to location

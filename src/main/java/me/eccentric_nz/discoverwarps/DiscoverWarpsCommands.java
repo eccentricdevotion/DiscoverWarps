@@ -297,6 +297,19 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     } catch (SQLException e) {
                         plugin.debug("Could not disable discover plate, " + e);
+                    } finally {
+                        if (rsName != null) {
+                            try {
+                                rsName.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
                     }
                 }
                 if (args[0].equalsIgnoreCase("auto")) {
@@ -393,9 +406,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         List<String> visited = new ArrayList<String>();
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
-                            String p = player.getName();
+                            String uuid = player.getUniqueId().toString();
                             // get players visited plates
-                            String queryVisited = "SELECT visited FROM players WHERE player = '" + p + "'";
+                            String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
                             ResultSet rsVisited = statement.executeQuery(queryVisited);
                             if (rsVisited.isBeforeFirst()) {
                                 visited = Arrays.asList(rsVisited.getString("visited").split(","));
@@ -458,7 +471,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                         // check the player
-                        player = plugin.getServer().getPlayerExact(args[2]);
+                        player = plugin.getServer().getPlayer(args[2]);
                         if (player == null || !player.isOnline()) {
                             sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_player"));
                             return true;
@@ -490,9 +503,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             if (must_discover) {
                                 List<String> visited = new ArrayList<String>();
                                 // can the player tp to here?
-                                String p = player.getName();
+                                String uuid = player.getUniqueId().toString();
                                 // get players visited plates
-                                String queryVisited = "SELECT visited FROM players WHERE player = '" + p + "'";
+                                String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
                                 ResultSet rsVisited = statement.executeQuery(queryVisited);
                                 if (rsVisited.isBeforeFirst()) {
                                     visited = Arrays.asList(rsVisited.getString("visited").split(","));
@@ -560,9 +573,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
                                 return true;
                             }
-                            String p = player.getName();
+                            String uuid = player.getUniqueId().toString();
                             // check they have sufficient balance
-                            double bal = plugin.economy.getBalance(p);
+                            double bal = plugin.economy.getBalance(player.getName());
                             if (cost > bal) {
                                 player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_money"));
                                 return true;
@@ -570,7 +583,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String id = rsBuy.getString("id");
                             String queryDiscover = "";
                             // check whether they have visited this plate before
-                            String queryPlayer = "SELECT * FROM players WHERE player = '" + p + "'";
+                            String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
                             ResultSet rsPlayer = statement.executeQuery(queryPlayer);
                             if (rsPlayer.next()) {
                                 firstplate = false;
@@ -580,13 +593,13 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                     sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
                                     return true;
                                 }
-                                queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + p + "'";
+                                queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                             }
                             if (firstplate == true) {
-                                queryDiscover = "INSERT INTO players (player, visited) VALUES ('" + p + "','" + id + "')";
+                                queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                             }
                             statement.executeUpdate(queryDiscover);
-                            plugin.economy.withdrawPlayer(p, cost);
+                            plugin.economy.withdrawPlayer(player.getName(), cost);
                             player.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
                             return true;
                         } else {

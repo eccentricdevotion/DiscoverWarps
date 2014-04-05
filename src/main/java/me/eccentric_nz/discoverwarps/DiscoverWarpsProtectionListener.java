@@ -64,7 +64,6 @@ public class DiscoverWarpsProtectionListener implements Listener {
                 }
                 if (statement != null) {
                     try {
-
                         statement.close();
                     } catch (SQLException e) {
                     }

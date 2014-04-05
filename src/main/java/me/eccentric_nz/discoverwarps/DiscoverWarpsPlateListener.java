@@ -37,7 +37,7 @@ public class DiscoverWarpsPlateListener implements Listener {
         Block b = event.getClickedBlock();
         if (a.equals(Action.PHYSICAL) && validBlocks.contains(b.getType())) {
             Player p = event.getPlayer();
-            String name = p.getName();
+            String uuid = p.getUniqueId().toString();
             if (p.hasPermission("discoverwarps.use")) {
                 Location l = b.getLocation();
                 String w = l.getWorld().getName();
@@ -63,7 +63,7 @@ public class DiscoverWarpsPlateListener implements Listener {
                             String warp = rsPlate.getString("name");
                             String queryDiscover = "";
                             // check whether they have visited this plate before
-                            String queryPlayer = "SELECT * FROM players WHERE player = '" + name + "'";
+                            String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
                             rsPlayer = statement.executeQuery(queryPlayer);
                             if (rsPlayer.next()) {
                                 firstplate = false;
@@ -73,19 +73,18 @@ public class DiscoverWarpsPlateListener implements Listener {
                                     discovered = true;
                                 }
                                 if (discovered == false) {
-                                    queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE player = '" + name + "'";
+                                    queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                 }
                             }
                             if (discovered == false && firstplate == true) {
-                                queryDiscover = "INSERT INTO players (player, visited) VALUES ('" + name + "','" + id + "')";
+                                queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                             }
                             statement.executeUpdate(queryDiscover);
                             if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
                                 Location loc = p.getLocation();
                                 loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
-                                ((ExperienceOrb) world.spawn(loc, ExperienceOrb.class)).setExperience(plugin.getConfig().getInt("xp_to_give"));
-                                //p.giveExp(plugin.getConfig().getInt("xp_to_give"));
+                                world.spawn(loc, ExperienceOrb.class).setExperience(plugin.getConfig().getInt("xp_to_give"));
                             }
                             if (discovered == false) {
                                 p.sendMessage(ChatColor.GOLD + "[" + plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
@@ -112,7 +111,6 @@ public class DiscoverWarpsPlateListener implements Listener {
                     }
                     if (statement != null) {
                         try {
-
                             statement.close();
                         } catch (SQLException e) {
                         }
