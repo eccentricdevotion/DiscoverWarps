@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
@@ -25,7 +26,7 @@ public class DiscoverWarps extends JavaPlugin {
     public Economy economy;
     ConsoleCommandSender console;
     String MY_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
-    private Map<String, DiscoverWarpsSession> discoverWarpSessions;
+    private Map<UUID, DiscoverWarpsSession> discoverWarpSessions;
 
     @Override
     public void onDisable() {
@@ -49,6 +50,8 @@ public class DiscoverWarps extends JavaPlugin {
             getDataFolder().setExecutable(true);
         }
         this.saveDefaultConfig();
+        // check config
+        new DiscoverWarpsConfig(this).checkConfig();
         try {
             String path = getDataFolder() + File.separator + "DiscoverWarps.db";
             service.setConnection(path);
@@ -56,8 +59,20 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (Exception e) {
             console.sendMessage(MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
-        // check config
-        new DiscoverWarpsConfig(this).checkConfig();
+        // update database add and populate uuid fields
+        if (!getConfig().getBoolean("uuid_conversion_done")) {
+            DiscoverWarpsUUIDConverter uc = new DiscoverWarpsUUIDConverter(this);
+            if (!uc.convert()) {
+                // conversion failed
+                System.err.println("[DiscoverWarps]" + ChatColor.RED + "UUID conversion failed, disabling...");
+                pm.disablePlugin(this);
+                return;
+            } else {
+                getConfig().set("uuid_conversion_done", true);
+                saveConfig();
+                System.out.println("[DiscoverWarps] UUID conversion successful :)");
+            }
+        }
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
@@ -77,7 +92,7 @@ public class DiscoverWarps extends JavaPlugin {
             }
             setupEconomy();
         }
-        this.discoverWarpSessions = new HashMap<String, DiscoverWarpsSession>();
+        this.discoverWarpSessions = new HashMap<UUID, DiscoverWarpsSession>();
     }
 
     private boolean setupVault() {
@@ -123,11 +138,11 @@ public class DiscoverWarps extends JavaPlugin {
     }
 
     public DiscoverWarpsSession getDiscoverWarpsSession(Player p) {
-        if (this.discoverWarpSessions.containsKey(p.getName())) {
-            return this.discoverWarpSessions.get(p.getName());
+        if (this.discoverWarpSessions.containsKey(p.getUniqueId())) {
+            return this.discoverWarpSessions.get(p.getUniqueId());
         }
         DiscoverWarpsSession session = new DiscoverWarpsSession(p);
-        this.discoverWarpSessions.put(p.getName(), session);
+        this.discoverWarpSessions.put(p.getUniqueId(), session);
         return session;
     }
 }
