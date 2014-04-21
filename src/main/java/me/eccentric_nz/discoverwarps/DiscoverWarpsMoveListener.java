@@ -185,7 +185,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                 while (rs.next()) {
                     String r = rs.getString("regions");
                     if (!rs.wasNull()) {
-                        List<String> regions = Arrays.asList(r.split(","));
+                        List<String> regions = new ArrayList<String>(Arrays.asList(r.split(",")));
                         regionPlayers.put(UUID.fromString(rs.getString("uuid")), regions);
                     }
                 }
