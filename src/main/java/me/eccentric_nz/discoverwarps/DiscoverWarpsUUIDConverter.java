@@ -71,7 +71,9 @@ public class DiscoverWarpsUUIDConverter {
             rs = statement.executeQuery(query);
             if (rs.isBeforeFirst()) {
                 while (rs.next()) {
-                    players.add(rs.getString("player"));
+                    if (!rs.getString("player").isEmpty()) {
+                        players.add(rs.getString("player"));
+                    }
                 }
                 DiscoverWarpsUUIDFetcher fetcher = new DiscoverWarpsUUIDFetcher(players);
                 // get UUIDs
