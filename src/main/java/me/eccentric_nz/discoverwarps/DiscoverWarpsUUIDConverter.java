@@ -57,7 +57,7 @@ public class DiscoverWarpsUUIDConverter {
         // backup database
         System.out.println("[DiscoverWarps] Backing up DiscoverWarps database...");
         File oldFile = new File(plugin.getDataFolder() + File.separator + "DiscoverWarps.db");
-        File newFile = new File(plugin.getDataFolder() + File.separator + "XPKeeper_" + System.currentTimeMillis() + ".db");
+        File newFile = new File(plugin.getDataFolder() + File.separator + "DiscoverWarps_" + System.currentTimeMillis() + ".db");
         FileUtil.copy(oldFile, newFile);
         // get all TARDIS owners from database
         Statement statement = null;
