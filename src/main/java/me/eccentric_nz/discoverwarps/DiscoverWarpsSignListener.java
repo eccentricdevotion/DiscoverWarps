@@ -77,12 +77,12 @@ public class DiscoverWarpsSignListener implements Listener {
                                         // check if there is a cost
                                         if (cost > 0 && plugin.getConfig().getBoolean("allow_buying")) {
                                             // check if they have sufficient balance
-                                            double bal = plugin.economy.getBalance(uuid);
+                                            double bal = plugin.economy.getBalance(p);
                                             if (cost > bal) {
                                                 p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.signs.no_money"));
                                                 return;
                                             }
-                                            plugin.economy.withdrawPlayer(uuid, cost);
+                                            plugin.economy.withdrawPlayer(p, cost);
                                             queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                         } else {
                                             p.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));

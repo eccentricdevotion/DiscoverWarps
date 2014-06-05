@@ -575,7 +575,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                             String uuid = player.getUniqueId().toString();
                             // check they have sufficient balance
-                            double bal = plugin.economy.getBalance(player.getName());
+                            double bal = plugin.economy.getBalance(player);
                             if (cost > bal) {
                                 player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_money"));
                                 return true;
@@ -599,7 +599,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                             }
                             statement.executeUpdate(queryDiscover);
-                            plugin.economy.withdrawPlayer(player.getName(), cost);
+                            plugin.economy.withdrawPlayer(player, cost);
                             player.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
                             return true;
                         } else {

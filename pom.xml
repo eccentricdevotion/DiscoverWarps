@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -20,6 +20,10 @@
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
     </repositories>
     <profiles>
@@ -63,7 +67,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>vault</artifactId>
-            <version>1.2.31</version>
+            <version>1.4.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -142,6 +146,16 @@
             <artifactId>worldedit</artifactId>
             <version>5.5.9-SNAPSHOT</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>js</artifactId>
+                    <groupId>rhino</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>truezip</artifactId>
+                    <groupId>de.schlichtherle</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
