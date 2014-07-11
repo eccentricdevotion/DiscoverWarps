@@ -262,7 +262,7 @@ public class MetricsLite {
         data.append(encode("guid")).append('=').append(encode(guid));
         encodeDataPair(data, "version", description.getVersion());
         encodeDataPair(data, "server", Bukkit.getVersion());
-        encodeDataPair(data, "players", Integer.toString(Bukkit.getServer().getOnlinePlayers().length));
+        encodeDataPair(data, "players", Integer.toString(Bukkit.getServer().getOnlinePlayers().size()));
         encodeDataPair(data, "revision", String.valueOf(REVISION));
 
         // If we're pinging, append it
@@ -321,7 +321,8 @@ public class MetricsLite {
     }
 
     /**
-     * <p>Encode a key/value data pair to be used in a HTTP post request. This
+     * <p>
+     * Encode a key/value data pair to be used in a HTTP post request. This
      * INCLUDES a & so the first key/value pair MUST be included manually,
      * e.g:</p>
      * <code>
