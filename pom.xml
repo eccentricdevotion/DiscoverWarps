@@ -2,17 +2,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_.plugins.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.4.3</version>
+    <version>1.5</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
-        <!--<repository>
-            <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-        </repository>-->
         <repository>
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public</url>
@@ -52,6 +48,15 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>
@@ -60,14 +65,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>LATEST</version>
+            <version>1.8-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>vault</artifactId>
-            <version>1.4.1</version>
+            <version>1.5.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -109,18 +114,26 @@
                     <artifactId>metrics</artifactId>
                     <groupId>org.mcstats</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>bukkit</artifactId>
+                    <groupId>org.bukkit</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mcstats.bukkit</groupId>
+                    <artifactId>metrics</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>multiworld</groupId>
             <artifactId>MultiWorld</artifactId>
-            <version>5.1.1</version>
+            <version>5.2.5</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
-            <version>5.8.1-SNAPSHOT</version>
+            <version>6.0.0-SNAPSHOT</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -139,12 +152,24 @@
                     <artifactId>commandbook</artifactId>
                     <groupId>com.sk89q</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>bukkit</artifactId>
+                    <groupId>org.bukkit</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.5.9-SNAPSHOT</version>
+            <version>6.0.0-SNAPSHOT</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -155,7 +180,18 @@
                     <artifactId>truezip</artifactId>
                     <groupId>de.schlichtherle</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsr305</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
