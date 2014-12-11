@@ -31,6 +31,7 @@ public class DiscoverWarpsConfig {
         // integer
         intOptions.put("no_damage_time", 10);
         intOptions.put("xp_to_give", 3);
+        intOptions.put("cooldown", 30);
         // string
         strOptions.put("sign", "discoverwarp");
         strOptions.put("localisation.plugin_name", "DiscoverWarps");

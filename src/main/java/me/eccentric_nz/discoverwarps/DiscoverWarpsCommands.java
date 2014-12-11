@@ -470,6 +470,17 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             must_discover = false;
                         }
                     }
+                    long cd = plugin.getConfig().getLong("cooldown") * 1000;
+                    if (cd > 0) {
+                        if (plugin.getDiscoverWarpCooldowns().containsKey(player.getUniqueId())) {
+                            long expire = plugin.getDiscoverWarpCooldowns().get(player.getUniqueId()) + cd;
+                            long now = System.currentTimeMillis();
+                            if (expire > now) {
+                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.no_warp_cooldown"), (expire - now) / 1000));
+                                return true;
+                            }
+                        }
+                    }
                     if (args.length == 1) {
                         // open GUI
                         ItemStack[] warps = new DiscoverWarpsGUIInventory(plugin, player.getUniqueId()).getWarps();
@@ -517,6 +528,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             Location l = new Location(w, x, y, z);
                             l.setPitch(player.getLocation().getPitch());
                             l.setYaw(player.getLocation().getYaw());
+                            if (cd > 0) {
+                                plugin.getDiscoverWarpCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
+                            }
                             new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
                             return true;
                         } else {

@@ -16,6 +16,7 @@ localisation:
     cost: The last argument must be a number!
     none_set: There are no DiscoverPlates to find!
     no_warp_name: You need to supply a warp name!
+    no_warp_cooldown: You need to wait %s seconds before warping again.
     needs_discover: You need to discover %s before you can teleport to it!
     auto_discover: DiscoverPlate %s auto-discovery is
     added: DiscoverPlate %s added!

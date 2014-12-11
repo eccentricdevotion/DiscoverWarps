@@ -64,6 +64,9 @@ public class DiscoverWarpsGUIListener implements Listener {
                             Location l = new Location(w, x, y, z);
                             l.setPitch(player.getLocation().getPitch());
                             l.setYaw(player.getLocation().getYaw());
+                            if (plugin.getConfig().getLong("cooldown") > 0) {
+                                plugin.getDiscoverWarpCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
+                            }
                             new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
                         } else {
                             player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
