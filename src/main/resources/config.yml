@@ -65,4 +65,5 @@ xp_on_discover: false
 xp_to_give: 3
 sign: discoverwarp
 worldguard_regions: true
+cooldown: 30
 debug: false

@@ -1,7 +1,5 @@
 package me.eccentric_nz.discoverwarps;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -15,23 +13,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import multiworld.MultiWorldPlugin;
-import multiworld.api.MultiWorldAPI;
-import multiworld.api.MultiWorldWorldData;
-import multiworld.api.flag.FlagName;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class DiscoverWarpsCommands implements CommandExecutor {
 
@@ -39,7 +31,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     List<String> admincmds;
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    String plugin_name;
     List<Material> validBlocks = new ArrayList<Material>();
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
@@ -58,7 +49,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         usercmds.add("tp");
         usercmds.add("list");
         usercmds.add("buy");
-        plugin_name = ChatColor.GOLD + "[" + this.plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
         validBlocks.add(Material.WOOD_PLATE);
         validBlocks.add(Material.STONE_PLATE);
     }
@@ -79,23 +69,23 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         + "\n" + plugin.getConfig().getString("localisation.help.warp") + ":\n" + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET
                         + "\n" + plugin.getConfig().getString("localisation.help.buy") + ":\n" + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET
                         + "\n" + plugin.getConfig().getString("localisation.help.config") + ":\n" + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
-                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.help"));
+                sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.help"));
                 sender.sendMessage("------------");
                 sender.sendMessage(HELP.split("\n"));
                 return true;
             }
             if (admincmds.contains(args[0])) {
                 if (!sender.hasPermission("discoverwarps.admin")) {
-                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.permission"));
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.permission"));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("allow_buying")) {
                     boolean bool = !plugin.getConfig().getBoolean("allow_buying");
                     plugin.getConfig().set("allow_buying", bool);
                     String str_bool = (bool) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
-                    sender.sendMessage(plugin_name + "allow_buying " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
+                    sender.sendMessage(plugin.getLocalisedName() + "allow_buying " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
                     if (bool) {
-                        sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.restart"), plugin_name));
+                        sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.restart"), plugin.getLocalisedName()));
                     }
                     plugin.saveConfig();
                     return true;
@@ -104,17 +94,17 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     boolean bool = !plugin.getConfig().getBoolean("xp_on_discover");
                     plugin.getConfig().set("xp_on_discover", bool);
                     String str_bool = (bool) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
-                    sender.sendMessage(plugin_name + "xp_on_discover " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
+                    sender.sendMessage(plugin.getLocalisedName() + "xp_on_discover " + String.format(plugin.getConfig().getString("localisation.config"), str_bool));
                     plugin.saveConfig();
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.arguments"));
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
                     return false;
                 }
                 if (args[0].equalsIgnoreCase("sign")) {
                     plugin.getConfig().set("sign", args[1]);
-                    sender.sendMessage(plugin_name + "sign " + String.format(plugin.getConfig().getString("localisation.config"), args[1]));
+                    sender.sendMessage(plugin.getLocalisedName() + "sign " + String.format(plugin.getConfig().getString("localisation.config"), args[1]));
                     plugin.saveConfig();
                     return true;
                 }
@@ -127,7 +117,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         // check player is standing on pressure plate
                         Material m = b.getType();
                         if (!validBlocks.contains(m)) {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.not_plate"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.not_plate"));
                             return true;
                         }
                         String region_name = "";
@@ -152,7 +142,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                     regions.remove(name);
                                 }
                                 region_name = regions.getFirst();
-                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.region_found"), region_name));
+                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.region_found"), region_name));
                             }
                         }
                         Statement statement = null;
@@ -164,7 +154,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             rsName = statement.executeQuery(queryName);
                             // check name is not in use
                             if (rsName.isBeforeFirst()) {
-                                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.name_in_use"));
+                                sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.name_in_use"));
                                 return true;
                             }
                             String w = b.getLocation().getWorld().getName();
@@ -179,7 +169,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             ps.setInt(5, z);
                             ps.setString(6, region_name);
                             ps.executeUpdate();
-                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.added"), args[1]));
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.added"), args[1]));
                         } catch (SQLException e) {
                             plugin.debug("Could not insert new discover plate, " + e);
                         } finally {
@@ -197,7 +187,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                         }
                     } else {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.only_player"));
                     }
                     return true;
                 }
@@ -219,10 +209,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             statement.executeUpdate(queryDel);
                             Block b = w.getBlockAt(x, y, z);
                             b.setTypeId(0);
-                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -254,10 +244,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 1 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.enabled"), args[1]));
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.enabled"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -289,10 +279,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (rsName.isBeforeFirst()) {
                             String queryDel = "UPDATE discoverwarps SET enabled = 0 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.disabled"), args[1]));
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.disabled"), args[1]));
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -326,10 +316,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String bool = (auto == 1) ? plugin.getConfig().getString("localisation.commands.str_true") : plugin.getConfig().getString("localisation.commands.str_false");
                             String queryDel = "UPDATE discoverwarps SET auto = " + auto + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.auto_discover"), args[1]) + " " + bool + "!");
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.auto_discover"), args[1]) + " " + bool + "!");
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -363,15 +353,15 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             try {
                                 cost = Integer.parseInt(args[2]);
                             } catch (NumberFormatException nfe) {
-                                sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.cost"));
+                                sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.cost"));
                                 return true;
                             }
                             String queryDel = "UPDATE discoverwarps SET cost = " + cost + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
-                            sender.sendMessage(plugin_name + "DiscoverPlate " + args[1] + " now costs " + cost + " to buy!");
+                            sender.sendMessage(plugin.getLocalisedName() + "DiscoverPlate " + args[1] + " now costs " + cost + " to buy!");
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -394,7 +384,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
             }
             if (usercmds.contains(args[0])) {
                 if (!sender.hasPermission("discoverwarps.use")) {
-                    sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.permission"));
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.permission"));
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("list")) {
@@ -418,7 +408,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         rsList = statement.executeQuery(queryList);
                         // check name is valid
                         if (rsList.isBeforeFirst()) {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.list"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.list"));
                             sender.sendMessage("------------");
                             int i = 1;
                             String discovered;
@@ -439,7 +429,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             sender.sendMessage("------------");
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.none_set"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.none_set"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -467,21 +457,29 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } else {
                         // tp specified player to specified warp
                         if (args.length < 3) {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.arguments"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
                             return true;
                         }
                         // check the player
                         player = plugin.getServer().getPlayer(args[2]);
                         if (player == null || !player.isOnline()) {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_player"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_player"));
                             return true;
                         }
                         if (args.length == 4 && args[3].toLowerCase().equals("true")) {
                             must_discover = false;
                         }
                     }
+                    if (args.length == 1) {
+                        // open GUI
+                        ItemStack[] warps = new DiscoverWarpsGUIInventory(plugin, player.getUniqueId()).getWarps();
+                        Inventory gui = plugin.getServer().createInventory(player, 54, ChatColor.RED + plugin.getConfig().getString("localisation.plugin_name"));
+                        gui.setContents(warps);
+                        player.openInventory(gui);
+                        return true;
+                    }
                     if (args.length < 2) {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
                     Statement statement = null;
@@ -511,7 +509,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                     visited = Arrays.asList(rsVisited.getString("visited").split(","));
                                 }
                                 if (!visited.contains(id) && !auto) {
-                                    sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
+                                    sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
                                     return true;
                                 }
                             }
@@ -519,10 +517,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             Location l = new Location(w, x, y, z);
                             l.setPitch(player.getLocation().getPitch());
                             l.setYaw(player.getLocation().getYaw());
-                            movePlayer(player, l, from);
+                            new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -544,18 +542,18 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 }
                 if (args[0].equalsIgnoreCase("buy")) {
                     if (!plugin.getConfig().getBoolean("allow_buying")) {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_buying"));
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_buying"));
                         return true;
                     }
                     Player player;
                     if (sender instanceof Player) {
                         player = (Player) sender;
                     } else {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.only_player"));
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.only_player"));
                         return true;
                     }
                     if (args.length < 2) {
-                        sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_warp_name"));
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
                         return false;
                     }
                     Statement statement = null;
@@ -570,14 +568,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             boolean firstplate = true;
                             double cost = rsBuy.getDouble("cost");
                             if (cost <= 0) {
-                                sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
+                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
                                 return true;
                             }
                             String uuid = player.getUniqueId().toString();
                             // check they have sufficient balance
                             double bal = plugin.economy.getBalance(player);
                             if (cost > bal) {
-                                player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.buying.no_money"));
+                                player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_money"));
                                 return true;
                             }
                             String id = rsBuy.getString("id");
@@ -590,7 +588,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                 String data = rsPlayer.getString("visited");
                                 String[] visited = data.split(",");
                                 if (Arrays.asList(visited).contains(id)) {
-                                    sender.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
+                                    sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
                                     return true;
                                 }
                                 queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
@@ -600,10 +598,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                             statement.executeUpdate(queryDiscover);
                             plugin.economy.withdrawPlayer(player, cost);
-                            player.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
+                            player.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
                             return true;
                         } else {
-                            sender.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
@@ -627,74 +625,4 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         }
         return false;
     }
-
-    public void movePlayer(Player p, Location l, World from) {
-
-        p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.teleport") + "...");
-
-        final Player thePlayer = p;
-        final Location theLocation = l;
-        final World to = theLocation.getWorld();
-        final boolean allowFlight = thePlayer.getAllowFlight();
-        final boolean crossWorlds = (from != to);
-        final boolean isSurvival = checkSurvival(to);
-
-        // adjust location to centre of plate
-        theLocation.setX(l.getX() + 0.5);
-        theLocation.setZ(l.getZ() + 0.5);
-
-        // try loading chunk
-        World world = l.getWorld();
-        Chunk chunk = world.getChunkAt(l);
-        if (!world.isChunkLoaded(chunk)) {
-            world.loadChunk(chunk);
-        }
-
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                thePlayer.teleport(theLocation);
-                thePlayer.getWorld().playSound(theLocation, Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-            }
-        }, 5L);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                thePlayer.teleport(theLocation);
-                if (plugin.getConfig().getBoolean("no_damage")) {
-                    thePlayer.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
-                }
-                if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
-                    thePlayer.setAllowFlight(true);
-                }
-            }
-        }, 10L);
-    }
-
-    /**
-     * Checks if the world the player is teleporting to is a SURVIVAL world.
-     *
-     * @param w the world to check
-     * @return true if the world is a SURVIVAL world, otherwise false
-     */
-    private boolean checkSurvival(World w) {
-        boolean bool = false;
-        if (plugin.pm.isPluginEnabled("Multiverse-Core")) {
-            MultiverseCore mv = (MultiverseCore) plugin.pm.getPlugin("Multiverse-Core");
-            MultiverseWorld mvw = mv.getCore().getMVWorldManager().getMVWorld(w);
-            GameMode gm = mvw.getGameMode();
-            if (gm.equals(GameMode.SURVIVAL)) {
-                bool = true;
-            }
-        }
-        if (plugin.pm.isPluginEnabled("MultiWorld")) {
-            MultiWorldAPI mw = ((MultiWorldPlugin) plugin.pm.getPlugin("MultiWorld")).getApi();
-            MultiWorldWorldData mww = mw.getWorld(w.getName());
-            if (!mww.isOptionSet(FlagName.CREATIVEWORLD)) {
-                bool = true;
-            }
-        }
-        return bool;
-    }
-
 }
