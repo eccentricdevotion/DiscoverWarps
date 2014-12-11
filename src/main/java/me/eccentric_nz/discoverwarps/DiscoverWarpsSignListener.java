@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,11 +21,9 @@ public class DiscoverWarpsSignListener implements Listener {
 
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    String plugin_name;
 
     public DiscoverWarpsSignListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        plugin_name = ChatColor.GOLD + "[" + this.plugin.getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
     }
 
     @EventHandler
@@ -79,13 +76,13 @@ public class DiscoverWarpsSignListener implements Listener {
                                             // check if they have sufficient balance
                                             double bal = plugin.economy.getBalance(p);
                                             if (cost > bal) {
-                                                p.sendMessage(plugin_name + plugin.getConfig().getString("localisation.signs.no_money"));
+                                                p.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.signs.no_money"));
                                                 return;
                                             }
                                             plugin.economy.withdrawPlayer(p, cost);
                                             queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                         } else {
-                                            p.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));
+                                            p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));
                                             return;
                                         }
                                     }
@@ -98,10 +95,9 @@ public class DiscoverWarpsSignListener implements Listener {
                                 Location l = new Location(w, x, y, z);
                                 l.setPitch(p.getLocation().getPitch());
                                 l.setYaw(p.getLocation().getYaw());
-                                DiscoverWarpsCommands dwc = new DiscoverWarpsCommands(plugin);
-                                dwc.movePlayer(p, l, p.getLocation().getWorld());
+                                new DiscoverWarpsMover(plugin).movePlayer(p, l, p.getLocation().getWorld());
                                 if (discovered == false) {
-                                    p.sendMessage(plugin_name + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
+                                    p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
                                 }
                                 rsPlayer.close();
                                 rsPlate.close();
@@ -152,7 +148,7 @@ public class DiscoverWarpsSignListener implements Listener {
                     String getQuery = "SELECT * FROM discoverwarps WHERE name = '" + line2 + "'";
                     rsPlate = statement.executeQuery(getQuery);
                     if (!rsPlate.next()) {
-                        player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                        player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                         event.setCancelled(true);
                         return;
                     }
@@ -160,7 +156,7 @@ public class DiscoverWarpsSignListener implements Listener {
                     if (cost > 0) {
                         event.setLine(2, "" + cost);
                     }
-                    player.sendMessage(plugin_name + plugin.getConfig().getString("localisation.signs.sign_made"));
+                    player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.signs.sign_made"));
                 } catch (SQLException e) {
                     plugin.debug("Could not get data for sign, " + e);
                 } finally {

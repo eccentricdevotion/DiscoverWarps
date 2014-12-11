@@ -1,4 +1,4 @@
- /* Portions of this code are copyright (c) 2011, The Multiverse Team All rights reserved. */
+/* Portions of this code are copyright (c) 2011, The Multiverse Team All rights reserved. */
 package me.eccentric_nz.discoverwarps;
 
 import java.io.File;
@@ -25,8 +25,10 @@ public class DiscoverWarps extends JavaPlugin {
     private Vault vault;
     public Economy economy;
     ConsoleCommandSender console;
-    String MY_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
+    String THE_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
     private Map<UUID, DiscoverWarpsSession> discoverWarpSessions;
+    private Map<UUID, Long> discoverWarpCooldowns;
+    private String localisedName;
 
     @Override
     public void onDisable() {
@@ -43,8 +45,8 @@ public class DiscoverWarps extends JavaPlugin {
         console = getServer().getConsoleSender();
         if (!getDataFolder().exists()) {
             if (!getDataFolder().mkdir()) {
-                console.sendMessage(MY_PLUGIN_NAME + " Could not create directory!");
-                console.sendMessage(MY_PLUGIN_NAME + " Requires you to manually make the DiscoverWarps/ directory!");
+                console.sendMessage(THE_PLUGIN_NAME + " Could not create directory!");
+                console.sendMessage(THE_PLUGIN_NAME + " Requires you to manually make the DiscoverWarps/ directory!");
             }
             getDataFolder().setWritable(true);
             getDataFolder().setExecutable(true);
@@ -57,7 +59,7 @@ public class DiscoverWarps extends JavaPlugin {
             service.setConnection(path);
             service.createTables();
         } catch (Exception e) {
-            console.sendMessage(MY_PLUGIN_NAME + " Connection and Tables Error: " + e);
+            console.sendMessage(THE_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
         // update database add and populate uuid fields
         if (!getConfig().getBoolean("uuid_conversion_done")) {
@@ -73,6 +75,7 @@ public class DiscoverWarps extends JavaPlugin {
                 System.out.println("[DiscoverWarps] UUID conversion successful :)");
             }
         }
+        localisedName = ChatColor.GOLD + "[" + getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
 
@@ -93,6 +96,7 @@ public class DiscoverWarps extends JavaPlugin {
             setupEconomy();
         }
         this.discoverWarpSessions = new HashMap<UUID, DiscoverWarpsSession>();
+        this.discoverWarpCooldowns = new HashMap<UUID, Long>();
     }
 
     private boolean setupVault() {
@@ -135,6 +139,7 @@ public class DiscoverWarps extends JavaPlugin {
         pm.registerEvents(new DiscoverWarpsProtectionListener(this), this);
         pm.registerEvents(new DiscoverWarpsExplodeListener(this), this);
         pm.registerEvents(new DiscoverWarpsSignListener(this), this);
+        pm.registerEvents(new DiscoverWarpsGUIListener(this), this);
     }
 
     public DiscoverWarpsSession getDiscoverWarpsSession(Player p) {
@@ -144,5 +149,13 @@ public class DiscoverWarps extends JavaPlugin {
         DiscoverWarpsSession session = new DiscoverWarpsSession(p);
         this.discoverWarpSessions.put(p.getUniqueId(), session);
         return session;
+    }
+
+    public Map<UUID, Long> getDiscoverWarpCooldowns() {
+        return discoverWarpCooldowns;
+    }
+
+    public String getLocalisedName() {
+        return localisedName;
     }
 }
