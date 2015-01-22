@@ -27,7 +27,7 @@ public class DiscoverWarpsConfig {
         boolOptions.put("debug", false);
         boolOptions.put("localisation.commands.str_true", true);
         boolOptions.put("localisation.commands.str_false", false);
-        boolOptions.put("uuid_converion_done", false);
+        boolOptions.put("uuid_conversion_done", false);
         // integer
         intOptions.put("no_damage_time", 10);
         intOptions.put("xp_to_give", 3);

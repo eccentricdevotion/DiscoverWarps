@@ -68,3 +68,4 @@ sign: discoverwarp
 worldguard_regions: true
 cooldown: 30
 debug: false
+uuid_conversion_done: true
