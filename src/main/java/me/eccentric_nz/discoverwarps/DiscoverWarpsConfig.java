@@ -80,6 +80,7 @@ public class DiscoverWarpsConfig {
         strOptions.put("localisation.signs.no_money", "You don't have enough maney to use this sign!");
         strOptions.put("localisation.signs.needs_discover", "You have not discovered %s yet!");
         strOptions.put("localisation.signs.sign_made", "Sign set successfully!");
+        strOptions.put("localisation.signs.sign_permission", "You do not have permission to make a DiscoverWarps sign!");
     }
 
     public void checkConfig() {
