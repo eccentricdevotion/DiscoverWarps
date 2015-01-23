@@ -59,6 +59,7 @@ localisation:
     no_money: You don't have enough maney to use this sign!
     needs_discover: You have not discovered %s yet!
     sign_made: Sign set successfully!
+    sign_permission: You do not have permission to make DiscoverWarps sign!
 no_damage: false
 no_damage_time: 10
 allow_buying: false

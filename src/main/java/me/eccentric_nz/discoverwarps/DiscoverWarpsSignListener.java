@@ -173,6 +173,9 @@ public class DiscoverWarpsSignListener implements Listener {
                         }
                     }
                 }
+            } else {
+                player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.signs.sign_permission"));
+                event.setCancelled(true);
             }
         }
     }
