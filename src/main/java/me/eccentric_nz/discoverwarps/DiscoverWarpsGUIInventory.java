@@ -59,6 +59,9 @@ public class DiscoverWarpsGUIInventory {
                         im.setDisplayName(warp);
                         is.setItemMeta(im);
                         stack[i] = is;
+                        if (i > 52) {
+                            break;
+                        }
                         i++;
                     }
                 }

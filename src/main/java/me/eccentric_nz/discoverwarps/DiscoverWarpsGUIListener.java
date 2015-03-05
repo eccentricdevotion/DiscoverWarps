@@ -39,7 +39,7 @@ public class DiscoverWarpsGUIListener implements Listener {
             event.setCancelled(true);
             int slot = event.getRawSlot();
             final Player player = (Player) event.getWhoClicked();
-            if (slot >= 0 && slot < 18) {
+            if (slot >= 0 && slot < 54) {
                 ItemStack is = inv.getItem(slot);
                 if (is != null) {
                     // get the display name
