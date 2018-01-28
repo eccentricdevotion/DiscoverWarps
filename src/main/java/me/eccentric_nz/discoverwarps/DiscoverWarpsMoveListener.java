@@ -26,7 +26,7 @@ public class DiscoverWarpsMoveListener implements Listener {
 
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    HashMap<UUID, List<String>> regionPlayers = new HashMap<UUID, List<String>>();
+    HashMap<UUID, List<String>> regionPlayers = new HashMap<>();
     WorldGuardPlugin wg;
 
     public DiscoverWarpsMoveListener(DiscoverWarps plugin) {
@@ -79,7 +79,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                         if (regionPlayers.containsKey(uuid)) {
                             theList = regionPlayers.get(uuid);
                         } else {
-                            theList = new ArrayList<String>();
+                            theList = new ArrayList<>();
                         }
                         theList.add(region);
                         regionPlayers.put(uuid, theList);
@@ -154,8 +154,8 @@ public class DiscoverWarpsMoveListener implements Listener {
      * @return the region name
      */
     public static String getRegion(ApplicableRegionSet ars) {
-        LinkedList< String> parentNames = new LinkedList< String>();
-        LinkedList< String> regions = new LinkedList< String>();
+        LinkedList< String> parentNames = new LinkedList<>();
+        LinkedList< String> regions = new LinkedList<>();
         for (ProtectedRegion pr : ars) {
             String id = pr.getId();
             regions.add(id);
@@ -165,9 +165,9 @@ public class DiscoverWarpsMoveListener implements Listener {
                 parent = parent.getParent();
             }
         }
-        for (String name : parentNames) {
+        parentNames.forEach((name) -> {
             regions.remove(name);
-        }
+        });
         return regions.getFirst();
     }
 
@@ -184,7 +184,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                 while (rs.next()) {
                     String r = rs.getString("regions");
                     if (!rs.wasNull()) {
-                        List<String> regions = new ArrayList<String>(Arrays.asList(r.split(",")));
+                        List<String> regions = new ArrayList<>(Arrays.asList(r.split(",")));
                         regionPlayers.put(UUID.fromString(rs.getString("uuid")), regions);
                     }
                 }

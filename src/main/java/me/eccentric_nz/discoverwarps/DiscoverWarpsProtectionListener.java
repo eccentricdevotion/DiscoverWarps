@@ -20,12 +20,17 @@ public class DiscoverWarpsProtectionListener implements Listener {
 
     private final DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    List<Material> validBlocks = new ArrayList<Material>();
+    List<Material> validBlocks = new ArrayList<>();
 
     public DiscoverWarpsProtectionListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        validBlocks.add(Material.WOOD_PLATE);
-        validBlocks.add(Material.STONE_PLATE);
+        validBlocks.add(Material.ACACIA_PRESSURE_PLATE);
+        validBlocks.add(Material.BIRCH_PRESSURE_PLATE);
+        validBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
+        validBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
+        validBlocks.add(Material.OAK_PRESSURE_PLATE);
+        validBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
+        validBlocks.add(Material.STONE_PRESSURE_PLATE);
     }
 
     @EventHandler

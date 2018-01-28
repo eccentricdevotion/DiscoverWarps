@@ -39,7 +39,7 @@ public class DiscoverWarpsGUIInventory {
             DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
             Connection connection = service.getConnection();
             statement = connection.createStatement();
-            List<String> visited = new ArrayList<String>();
+            List<String> visited = new ArrayList<>();
             // get players visited plates
             String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid.toString() + "'";
             ResultSet rsVisited = statement.executeQuery(queryVisited);
@@ -54,7 +54,7 @@ public class DiscoverWarpsGUIInventory {
                 while (rs.next()) {
                     if (visited.contains(rs.getString("id")) || rs.getBoolean("auto")) {
                         String warp = rs.getString("name");
-                        ItemStack is = new ItemStack(Material.STONE_PLATE, 1);
+                        ItemStack is = new ItemStack(Material.STONE_PRESSURE_PLATE, 1);
                         ItemMeta im = is.getItemMeta();
                         im.setDisplayName(warp);
                         is.setItemMeta(im);

@@ -31,11 +31,11 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     List<String> admincmds;
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    List<Material> validBlocks = new ArrayList<Material>();
+    List<Material> validBlocks = new ArrayList<>();
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
         this.plugin = plugin;
-        this.admincmds = new ArrayList<String>();
+        this.admincmds = new ArrayList<>();
         admincmds.add("set");
         admincmds.add("delete");
         admincmds.add("enable");
@@ -45,15 +45,21 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("sign");
         admincmds.add("allow_buying");
         admincmds.add("xp_on_discover");
-        this.usercmds = new ArrayList<String>();
+        this.usercmds = new ArrayList<>();
         usercmds.add("tp");
         usercmds.add("list");
         usercmds.add("buy");
-        validBlocks.add(Material.WOOD_PLATE);
-        validBlocks.add(Material.STONE_PLATE);
+        validBlocks.add(Material.ACACIA_PRESSURE_PLATE);
+        validBlocks.add(Material.BIRCH_PRESSURE_PLATE);
+        validBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
+        validBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
+        validBlocks.add(Material.OAK_PRESSURE_PLATE);
+        validBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
+        validBlocks.add(Material.STONE_PRESSURE_PLATE);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
@@ -127,8 +133,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             RegionManager rm = wg.getRegionManager(l.getWorld());
                             ApplicableRegionSet ars = rm.getApplicableRegions(l);
                             if (ars.size() > 0) {
-                                LinkedList< String> parentNames = new LinkedList< String>();
-                                LinkedList< String> regions = new LinkedList< String>();
+                                LinkedList< String> parentNames = new LinkedList<>();
+                                LinkedList< String> regions = new LinkedList<>();
                                 for (ProtectedRegion pr : ars) {
                                     String id = pr.getId();
                                     regions.add(id);
@@ -138,9 +144,9 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                                         parent = parent.getParent();
                                     }
                                 }
-                                for (String name : parentNames) {
+                                parentNames.forEach((name) -> {
                                     regions.remove(name);
-                                }
+                                });
                                 region_name = regions.getFirst();
                                 sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.region_found"), region_name));
                             }
@@ -208,7 +214,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String queryDel = "DELETE FROM discoverwarps WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
                             Block b = w.getBlockAt(x, y, z);
-                            b.setTypeId(0);
+                            b.setType(Material.AIR);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
                             return true;
                         } else {
@@ -393,7 +399,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     try {
                         Connection connection = service.getConnection();
                         statement = connection.createStatement();
-                        List<String> visited = new ArrayList<String>();
+                        List<String> visited = new ArrayList<>();
                         if (sender instanceof Player) {
                             Player player = (Player) sender;
                             String uuid = player.getUniqueId().toString();
@@ -510,7 +516,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             int z = rsName.getInt("z");
                             boolean auto = rsName.getBoolean("auto");
                             if (must_discover) {
-                                List<String> visited = new ArrayList<String>();
+                                List<String> visited = new ArrayList<>();
                                 // can the player tp to here?
                                 String uuid = player.getUniqueId().toString();
                                 // get players visited plates

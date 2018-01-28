@@ -2,7 +2,6 @@
 package me.eccentric_nz.discoverwarps;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,30 +60,9 @@ public class DiscoverWarps extends JavaPlugin {
         } catch (Exception e) {
             console.sendMessage(THE_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
-        // update database add and populate uuid fields
-        if (!getConfig().getBoolean("uuid_conversion_done")) {
-            DiscoverWarpsUUIDConverter uc = new DiscoverWarpsUUIDConverter(this);
-            if (!uc.convert()) {
-                // conversion failed
-                System.err.println("[DiscoverWarps]" + ChatColor.RED + "UUID conversion failed, disabling...");
-                pm.disablePlugin(this);
-                return;
-            } else {
-                getConfig().set("uuid_conversion_done", true);
-                saveConfig();
-                System.out.println("[DiscoverWarps] UUID conversion successful :)");
-            }
-        }
         localisedName = ChatColor.GOLD + "[" + getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
         commando = new DiscoverWarpsCommands(this);
         getCommand("discoverwarps").setExecutor(commando);
-
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
 
         registerListeners();
 
@@ -95,8 +73,8 @@ public class DiscoverWarps extends JavaPlugin {
             }
             setupEconomy();
         }
-        this.discoverWarpSessions = new HashMap<UUID, DiscoverWarpsSession>();
-        this.discoverWarpCooldowns = new HashMap<UUID, Long>();
+        this.discoverWarpSessions = new HashMap<>();
+        this.discoverWarpCooldowns = new HashMap<>();
     }
 
     private boolean setupVault() {

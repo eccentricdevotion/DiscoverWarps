@@ -51,23 +51,17 @@ public class DiscoverWarpsMover {
             world.loadChunk(chunk);
         }
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                thePlayer.teleport(theLocation);
-                thePlayer.getWorld().playSound(theLocation, Sound.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
-            }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            thePlayer.teleport(theLocation);
+            thePlayer.getWorld().playSound(theLocation, Sound.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
         }, 5L);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                thePlayer.teleport(theLocation);
-                if (plugin.getConfig().getBoolean("no_damage")) {
-                    thePlayer.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
-                }
-                if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
-                    thePlayer.setAllowFlight(true);
-                }
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            thePlayer.teleport(theLocation);
+            if (plugin.getConfig().getBoolean("no_damage")) {
+                thePlayer.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
+            }
+            if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
+                thePlayer.setAllowFlight(true);
             }
         }, 10L);
     }
