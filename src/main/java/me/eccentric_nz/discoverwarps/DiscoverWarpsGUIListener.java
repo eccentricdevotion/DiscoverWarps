@@ -3,10 +3,6 @@
  */
 package me.eccentric_nz.discoverwarps;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,8 +14,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
- *
  * @author eccentric_nz
  */
 public class DiscoverWarpsGUIListener implements Listener {
@@ -38,7 +38,7 @@ public class DiscoverWarpsGUIListener implements Listener {
         if (name.equals(ChatColor.RED + plugin.getConfig().getString("localisation.plugin_name"))) {
             event.setCancelled(true);
             int slot = event.getRawSlot();
-            final Player player = (Player) event.getWhoClicked();
+            Player player = (Player) event.getWhoClicked();
             if (slot >= 0 && slot < 54) {
                 ItemStack is = inv.getItem(slot);
                 if (is != null) {
@@ -97,7 +97,7 @@ public class DiscoverWarpsGUIListener implements Listener {
      *
      * @param p the player using the GUI
      */
-    public void close(final Player p) {
+    public void close(Player p) {
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             p.closeInventory();
         }, 1L);

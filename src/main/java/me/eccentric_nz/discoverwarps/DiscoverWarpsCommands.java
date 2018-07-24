@@ -4,15 +4,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +16,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 public class DiscoverWarpsCommands implements CommandExecutor {
 
     private final DiscoverWarps plugin;
@@ -35,7 +32,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
         this.plugin = plugin;
-        this.admincmds = new ArrayList<>();
+        admincmds = new ArrayList<>();
         admincmds.add("set");
         admincmds.add("delete");
         admincmds.add("enable");
@@ -45,7 +42,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("sign");
         admincmds.add("allow_buying");
         admincmds.add("xp_on_discover");
-        this.usercmds = new ArrayList<>();
+        usercmds = new ArrayList<>();
         usercmds.add("tp");
         usercmds.add("list");
         usercmds.add("buy");
@@ -59,7 +56,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
@@ -133,8 +129,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             RegionManager rm = wg.getRegionManager(l.getWorld());
                             ApplicableRegionSet ars = rm.getApplicableRegions(l);
                             if (ars.size() > 0) {
-                                LinkedList< String> parentNames = new LinkedList<>();
-                                LinkedList< String> regions = new LinkedList<>();
+                                LinkedList<String> parentNames = new LinkedList<>();
+                                LinkedList<String> regions = new LinkedList<>();
                                 for (ProtectedRegion pr : ars) {
                                     String id = pr.getId();
                                     regions.add(id);

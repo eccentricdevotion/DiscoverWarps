@@ -3,6 +3,10 @@
  */
 package me.eccentric_nz.discoverwarps;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,12 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
- *
  * @author eccentric_nz
  */
 public class DiscoverWarpsGUIInventory {
@@ -28,7 +28,7 @@ public class DiscoverWarpsGUIInventory {
     public DiscoverWarpsGUIInventory(DiscoverWarps plugin, UUID uuid) {
         this.plugin = plugin;
         this.uuid = uuid;
-        this.warps = getStacks();
+        warps = getStacks();
     }
 
     private ItemStack[] getStacks() {

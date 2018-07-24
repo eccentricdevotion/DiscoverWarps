@@ -1,11 +1,6 @@
 /* Portions of this code are copyright (c) 2011, The Multiverse Team All rights reserved. */
 package me.eccentric_nz.discoverwarps;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
@@ -16,22 +11,28 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class DiscoverWarps extends JavaPlugin {
 
-    DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    private DiscoverWarpsCommands commando;
-    PluginManager pm = getServer().getPluginManager();
-    private Vault vault;
     public Economy economy;
+    DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
+    PluginManager pm = getServer().getPluginManager();
     ConsoleCommandSender console;
     String THE_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
+    private DiscoverWarpsCommands commando;
+    private Vault vault;
     private Map<UUID, DiscoverWarpsSession> discoverWarpSessions;
     private Map<UUID, Long> discoverWarpCooldowns;
     private String localisedName;
 
     @Override
     public void onDisable() {
-        this.saveConfig();
+        saveConfig();
         try {
             service.connection.close();
         } catch (SQLException e) {
@@ -50,7 +51,7 @@ public class DiscoverWarps extends JavaPlugin {
             getDataFolder().setWritable(true);
             getDataFolder().setExecutable(true);
         }
-        this.saveDefaultConfig();
+        saveDefaultConfig();
         // check config
         new DiscoverWarpsConfig(this).checkConfig();
         try {
@@ -73,8 +74,8 @@ public class DiscoverWarps extends JavaPlugin {
             }
             setupEconomy();
         }
-        this.discoverWarpSessions = new HashMap<>();
-        this.discoverWarpCooldowns = new HashMap<>();
+        discoverWarpSessions = new HashMap<>();
+        discoverWarpCooldowns = new HashMap<>();
     }
 
     private boolean setupVault() {
@@ -121,11 +122,11 @@ public class DiscoverWarps extends JavaPlugin {
     }
 
     public DiscoverWarpsSession getDiscoverWarpsSession(Player p) {
-        if (this.discoverWarpSessions.containsKey(p.getUniqueId())) {
-            return this.discoverWarpSessions.get(p.getUniqueId());
+        if (discoverWarpSessions.containsKey(p.getUniqueId())) {
+            return discoverWarpSessions.get(p.getUniqueId());
         }
         DiscoverWarpsSession session = new DiscoverWarpsSession(p);
-        this.discoverWarpSessions.put(p.getUniqueId(), session);
+        discoverWarpSessions.put(p.getUniqueId(), session);
         return session;
     }
 

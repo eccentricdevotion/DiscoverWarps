@@ -4,16 +4,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ExperienceOrb;
@@ -21,6 +11,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 public class DiscoverWarpsMoveListener implements Listener {
 
@@ -31,8 +27,32 @@ public class DiscoverWarpsMoveListener implements Listener {
 
     public DiscoverWarpsMoveListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        this.wg = (WorldGuardPlugin) plugin.pm.getPlugin("WorldGuard");
+        wg = (WorldGuardPlugin) plugin.pm.getPlugin("WorldGuard");
         setupRegionPlayers();
+    }
+
+    /**
+     * Gets the innermost region of a set of WorldGuard regions.
+     *
+     * @param ars The WorldGuard ApplicableRegionSet to search
+     * @return the region name
+     */
+    public static String getRegion(ApplicableRegionSet ars) {
+        LinkedList<String> parentNames = new LinkedList<>();
+        LinkedList<String> regions = new LinkedList<>();
+        for (ProtectedRegion pr : ars) {
+            String id = pr.getId();
+            regions.add(id);
+            ProtectedRegion parent = pr.getParent();
+            while (parent != null) {
+                parentNames.add(parent.getId());
+                parent = parent.getParent();
+            }
+        }
+        parentNames.forEach((name) -> {
+            regions.remove(name);
+        });
+        return regions.getFirst();
     }
 
     @EventHandler
@@ -145,30 +165,6 @@ public class DiscoverWarpsMoveListener implements Listener {
                 }
             }
         }
-    }
-
-    /**
-     * Gets the innermost region of a set of WorldGuard regions.
-     *
-     * @param ars The WorldGuard ApplicableRegionSet to search
-     * @return the region name
-     */
-    public static String getRegion(ApplicableRegionSet ars) {
-        LinkedList< String> parentNames = new LinkedList<>();
-        LinkedList< String> regions = new LinkedList<>();
-        for (ProtectedRegion pr : ars) {
-            String id = pr.getId();
-            regions.add(id);
-            ProtectedRegion parent = pr.getParent();
-            while (parent != null) {
-                parentNames.add(parent.getId());
-                parent = parent.getParent();
-            }
-        }
-        parentNames.forEach((name) -> {
-            regions.remove(name);
-        });
-        return regions.getFirst();
     }
 
     private void setupRegionPlayers() {

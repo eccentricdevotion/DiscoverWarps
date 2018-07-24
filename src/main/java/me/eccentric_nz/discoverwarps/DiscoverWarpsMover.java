@@ -9,16 +9,10 @@ import multiworld.MultiWorldPlugin;
 import multiworld.api.MultiWorldAPI;
 import multiworld.api.MultiWorldWorldData;
 import multiworld.api.flag.FlagName;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 /**
- *
  * @author eccentric_nz
  */
 public class DiscoverWarpsMover {
@@ -33,12 +27,12 @@ public class DiscoverWarpsMover {
 
         p.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.teleport") + "...");
 
-        final Player thePlayer = p;
-        final Location theLocation = l;
-        final World to = theLocation.getWorld();
-        final boolean allowFlight = thePlayer.getAllowFlight();
-        final boolean crossWorlds = (from != to);
-        final boolean isSurvival = checkSurvival(to);
+        Player thePlayer = p;
+        Location theLocation = l;
+        World to = theLocation.getWorld();
+        boolean allowFlight = thePlayer.getAllowFlight();
+        boolean crossWorlds = (from != to);
+        boolean isSurvival = checkSurvival(to);
 
         // adjust location to centre of plate
         theLocation.setX(l.getX() + 0.5);
@@ -53,7 +47,7 @@ public class DiscoverWarpsMover {
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             thePlayer.teleport(theLocation);
-            thePlayer.getWorld().playSound(theLocation, Sound.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
+            thePlayer.getWorld().playSound(theLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
         }, 5L);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             thePlayer.teleport(theLocation);

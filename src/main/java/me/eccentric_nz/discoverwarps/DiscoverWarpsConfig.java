@@ -1,24 +1,25 @@
 package me.eccentric_nz.discoverwarps;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class DiscoverWarpsConfig {
 
     private final DiscoverWarps plugin;
-    private FileConfiguration config = null;
-    private File configFile = null;
     HashMap<String, String> strOptions = new HashMap<>();
     HashMap<String, Integer> intOptions = new HashMap<>();
     HashMap<String, Boolean> boolOptions = new HashMap<>();
+    private FileConfiguration config = null;
+    private File configFile = null;
 
     public DiscoverWarpsConfig(DiscoverWarps plugin) {
         this.plugin = plugin;
-        this.configFile = new File(plugin.getDataFolder(), "config.yml");
-        this.config = YamlConfiguration.loadConfiguration(configFile);
+        configFile = new File(plugin.getDataFolder(), "config.yml");
+        config = YamlConfiguration.loadConfiguration(configFile);
         // boolean
         boolOptions.put("no_damage", false);
         boolOptions.put("allow_buying", false);

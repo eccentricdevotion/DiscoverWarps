@@ -1,10 +1,6 @@
 package me.eccentric_nz.discoverwarps;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DiscoverWarpsDatabase {
 
@@ -17,13 +13,13 @@ public class DiscoverWarpsDatabase {
         return instance;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     public void setConnection(String path) throws Exception {
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 
     public void createTables() {

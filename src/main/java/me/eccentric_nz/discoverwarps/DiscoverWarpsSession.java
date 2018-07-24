@@ -28,7 +28,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- *
  * @author eccentric_nz
  */
 public class DiscoverWarpsSession {
@@ -37,35 +36,35 @@ public class DiscoverWarpsSession {
     private Location loc;
 
     public DiscoverWarpsSession(Player p) {
-        this.setLocation(p.getLocation());
+        setLocation(p.getLocation());
     }
 
     public void setStaleLocation(boolean active) {
-        this.staleLocation = active;
+        staleLocation = active;
     }
 
     public boolean isStaleLocation() {
-        return this.staleLocation;
+        return staleLocation;
     }
 
     public void setStaleLocation(Location loc) {
 
         // If the player has not moved, they have a stale location
-        if (this.getLocation().getBlockX() == loc.getBlockX() && this.getLocation().getBlockY() == loc.getBlockY() && this.getLocation().getBlockZ() == loc.getBlockZ()) {
-            this.setStaleLocation(true);
+        if (getLocation().getBlockX() == loc.getBlockX() && getLocation().getBlockY() == loc.getBlockY() && getLocation().getBlockZ() == loc.getBlockZ()) {
+            setStaleLocation(true);
         } else {
             // Update the Players Session to the new Location.
-            this.setLocation(loc);
+            setLocation(loc);
             // The location is no longer stale.
-            this.setStaleLocation(false);
+            setStaleLocation(false);
         }
+    }
+
+    public Location getLocation() {
+        return loc;
     }
 
     private void setLocation(Location loc) {
         this.loc = loc;
-    }
-
-    public Location getLocation() {
-        return this.loc;
     }
 }
