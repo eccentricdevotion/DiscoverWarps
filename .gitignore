@@ -18,3 +18,5 @@ xcuserdata
 CVS
 /target/
 /lib/
+.idea
+*.iml

@@ -9,14 +9,6 @@
             <id>Spigot</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>macgeek</id>
-            <url>http://tardisjenkins.duckdns.org:8888</url>
-        </repository>
-        <repository>
-            <id>Bromley Massive</id>
-            <url>http://tardisjenkins.duckdns.org:8080/plugin/repository/everything/</url>
-        </repository>
     </repositories>
     <profiles>
         <profile>
@@ -59,9 +51,9 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>18w03b-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.13-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
@@ -98,9 +90,10 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>vault</artifactId>
-            <version>1.5.0</version>
+            <version>1.6.6</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/Vault-1.6.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
