@@ -1,6 +1,8 @@
 package me.eccentric_nz.discoverwarps;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -23,11 +25,11 @@ public class DiscoverWarpsMoveListener implements Listener {
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     HashMap<UUID, List<String>> regionPlayers = new HashMap<>();
-    WorldGuardPlugin wg;
+    WorldGuardPlatform wg;
 
     public DiscoverWarpsMoveListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        wg = (WorldGuardPlugin) plugin.pm.getPlugin("WorldGuard");
+        wg = WorldGuard.getInstance().getPlatform();
         setupRegionPlayers();
     }
 
@@ -76,8 +78,9 @@ public class DiscoverWarpsMoveListener implements Listener {
             if (dws.isStaleLocation()) {
                 return;
             }
-            RegionManager rm = wg.getRegionManager(l.getWorld());
-            ApplicableRegionSet ars = rm.getApplicableRegions(l);
+            RegionManager rm = wg.getRegionContainer().get(wg.getWorldByName(l.getWorld().getName()));
+            Vector vector = new Vector(l.getX(), l.getY(), l.getZ());
+            ApplicableRegionSet ars = rm.getApplicableRegions(vector);
             if (ars.size() > 0) {
                 // get the region
                 String region = getRegion(ars);
@@ -157,7 +160,6 @@ public class DiscoverWarpsMoveListener implements Listener {
                     }
                     if (statement != null) {
                         try {
-
                             statement.close();
                         } catch (SQLException e) {
                         }
