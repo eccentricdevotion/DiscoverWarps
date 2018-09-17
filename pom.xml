@@ -91,7 +91,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>vault</artifactId>
-            <version>1.6.7</version>
+            <version>1.7.1</version>
             <type>jar</type>
             <scope>system</scope>
             <systemPath>${basedir}/lib/Vault.jar</systemPath>
