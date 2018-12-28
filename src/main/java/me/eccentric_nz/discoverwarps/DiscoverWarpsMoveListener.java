@@ -1,6 +1,6 @@
 package me.eccentric_nz.discoverwarps;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -79,7 +79,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                 return;
             }
             RegionManager rm = wg.getRegionContainer().get(wg.getWorldByName(l.getWorld().getName()));
-            Vector vector = new Vector(l.getX(), l.getY(), l.getZ());
+            BlockVector3 vector = BlockVector3.at(l.getX(), l.getY(), l.getZ());
             ApplicableRegionSet ars = rm.getApplicableRegions(vector);
             if (ars.size() > 0) {
                 // get the region
