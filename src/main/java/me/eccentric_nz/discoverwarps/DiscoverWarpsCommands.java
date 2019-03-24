@@ -1,5 +1,6 @@
 package me.eccentric_nz.discoverwarps;
 
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
@@ -62,17 +63,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
             if (args.length == 0) {
-                String HELP
-                        = plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.delete") + ":\n" + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.disable") + ":\n" + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.enable") + ":\n" + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.auto") + ":\n" + ChatColor.GREEN + "/dw auto [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.cost") + ":\n" + ChatColor.GREEN + "/dw cost [name] [amount]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.list") + ":\n" + ChatColor.GREEN + "/dw list" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.warp") + ":\n" + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.buy") + ":\n" + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET
-                        + "\n" + plugin.getConfig().getString("localisation.help.config") + ":\n" + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
+                String HELP = plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.delete") + ":\n" + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.disable") + ":\n" + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.enable") + ":\n" + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.auto") + ":\n" + ChatColor.GREEN + "/dw auto [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.cost") + ":\n" + ChatColor.GREEN + "/dw cost [name] [amount]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.list") + ":\n" + ChatColor.GREEN + "/dw list" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.warp") + ":\n" + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.buy") + ":\n" + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.config") + ":\n" + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
                 sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.help"));
                 sender.sendMessage("------------");
                 sender.sendMessage(HELP.split("\n"));
@@ -128,7 +119,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         // check if the plate is inside a WorldGuard region
                         if (plugin.getConfig().getBoolean("worldguard_regions") && plugin.pm.isPluginEnabled("WorldGuard")) {
                             WorldGuardPlatform wg = WorldGuard.getInstance().getPlatform();
-                            RegionManager rm = wg.getRegionContainer().get(wg.getWorldByName(l.getWorld().getName()));
+                            RegionManager rm = wg.getRegionContainer().get(new BukkitWorld(l.getWorld()));
                             BlockVector3 vector = BlockVector3.at(l.getX(), l.getY(), l.getZ());
                             ApplicableRegionSet ars = rm.getApplicableRegions(vector);
                             if (ars.size() > 0) {
