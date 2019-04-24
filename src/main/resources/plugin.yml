@@ -4,8 +4,8 @@ description: Adds Skyrim type warps to Minecraft Server
 main: me.eccentric_nz.discoverwarps.DiscoverWarps
 name: DiscoverWarps
 load: POSTWORLD
-version: 1.6.2
-api-version: 1.13
+version: 1.7
+api-version: 1.14
 softdepend: [Vault,Multiverse-Core,MultiWorld,WorldGuard]
 permissions:
   discoverwarps.use:

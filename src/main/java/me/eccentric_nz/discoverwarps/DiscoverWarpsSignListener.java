@@ -1,7 +1,7 @@
 package me.eccentric_nz.discoverwarps;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -31,7 +31,7 @@ public class DiscoverWarpsSignListener implements Listener {
     public void onSignClick(PlayerInteractEvent event) {
         Action a = event.getAction();
         Block b = event.getClickedBlock();
-        if (a.equals(Action.RIGHT_CLICK_BLOCK) && (b.getType().equals(Material.WALL_SIGN) || b.getType().equals(Material.SIGN))) {
+        if (a.equals(Action.RIGHT_CLICK_BLOCK) && Tag.SIGNS.getValues().contains(b.getType())) {
             Sign s = (Sign) b.getState();
             if (s.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
                 Player p = event.getPlayer();
