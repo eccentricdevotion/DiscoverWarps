@@ -58,6 +58,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                 int y = rsPlate.getInt("y");
                                 int z = rsPlate.getInt("z");
                                 double cost = rsPlate.getDouble("cost");
+                                boolean auto = rsPlate.getBoolean("auto");
                                 String queryDiscover = "";
                                 // check whether they have visited this plate before
                                 String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
@@ -71,7 +72,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                     if (Arrays.asList(visited).contains(id)) {
                                         discovered = true;
                                     }
-                                    if (discovered == false) {
+                                    if (discovered == false && auto == false) {
                                         // check if there is a cost
                                         if (cost > 0 && plugin.getConfig().getBoolean("allow_buying")) {
                                             // check if they have sufficient balance
