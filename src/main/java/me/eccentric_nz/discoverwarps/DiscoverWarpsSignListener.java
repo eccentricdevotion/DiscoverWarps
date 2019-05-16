@@ -87,6 +87,11 @@ public class DiscoverWarpsSignListener implements Listener {
                                             p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));
                                             return;
                                         }
+                                    } else if (auto == true) {
+                                        plugin.debug("Auto is true");
+                                        if (!data.isEmpty()) {
+                                            queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
+                                        }
                                     }
                                 }
                                 if (discovered == false && firstplate == true) {
