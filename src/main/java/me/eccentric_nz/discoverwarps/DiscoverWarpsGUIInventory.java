@@ -46,7 +46,7 @@ public class DiscoverWarpsGUIInventory {
             if (rsVisited.isBeforeFirst()) {
                 visited = Arrays.asList(rsVisited.getString("visited").split(","));
             }
-            String queryList = "SELECT id, name, auto, cost FROM discoverwarps WHERE enabled = 1";
+            String queryList = "SELECT id, name, auto, cost, icon FROM discoverwarps WHERE enabled = 1";
             rs = statement.executeQuery(queryList);
             // check name is valid
             if (rs.isBeforeFirst()) {
@@ -54,7 +54,13 @@ public class DiscoverWarpsGUIInventory {
                 while (rs.next()) {
                     if (visited.contains(rs.getString("id")) || rs.getBoolean("auto")) {
                         String warp = rs.getString("name");
-                        ItemStack is = new ItemStack(Material.STONE_PRESSURE_PLATE, 1);
+                        Material material;
+                        try {
+                            material = Material.valueOf(rs.getString("icon"));
+                        } catch (IllegalArgumentException e) {
+                            material = Material.STONE_PRESSURE_PLATE;
+                        }
+                        ItemStack is = new ItemStack(material, 1);
                         ItemMeta im = is.getItemMeta();
                         im.setDisplayName(warp);
                         is.setItemMeta(im);
@@ -72,13 +78,13 @@ public class DiscoverWarpsGUIInventory {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException ex) {
+                } catch (SQLException ignored) {
                 }
             }
             if (statement != null) {
                 try {
                     statement.close();
-                } catch (SQLException ex) {
+                } catch (SQLException ignored) {
                 }
             }
         }
