@@ -1,12 +1,10 @@
 /* Portions of this code are copyright (c) 2011, The Multiverse Team All rights reserved. */
 package me.eccentric_nz.discoverwarps;
 
-import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,8 +22,6 @@ public class DiscoverWarps extends JavaPlugin {
     PluginManager pm = getServer().getPluginManager();
     ConsoleCommandSender console;
     String THE_PLUGIN_NAME = ChatColor.GOLD + "[DiscoverWarps] " + ChatColor.RESET;
-    private DiscoverWarpsCommands commando;
-    private Vault vault;
     private Map<UUID, DiscoverWarpsSession> discoverWarpSessions;
     private Map<UUID, Long> discoverWarpCooldowns;
     private String localisedName;
@@ -62,13 +58,13 @@ public class DiscoverWarps extends JavaPlugin {
             console.sendMessage(THE_PLUGIN_NAME + " Connection and Tables Error: " + e);
         }
         localisedName = ChatColor.GOLD + "[" + getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
-        commando = new DiscoverWarpsCommands(this);
-        getCommand("discoverwarps").setExecutor(commando);
+        getCommand("discoverwarps").setExecutor(new DiscoverWarpsCommands(this));
+        getCommand("discoverwarps").setTabCompleter(new DiscoverWarpsTabComplete(this));
 
         registerListeners();
 
         if (getConfig().getBoolean("allow_buying")) {
-            if (!setupVault()) {
+            if (!checkVault()) {
                 pm.disablePlugin(this);
                 return;
             }
@@ -78,10 +74,8 @@ public class DiscoverWarps extends JavaPlugin {
         discoverWarpCooldowns = new HashMap<>();
     }
 
-    private boolean setupVault() {
-        Plugin x = pm.getPlugin("Vault");
-        if (x != null && x instanceof Vault) {
-            vault = (Vault) x;
+    private boolean checkVault() {
+        if (pm.isPluginEnabled("Vault")) {
             return true;
         } else {
             console.sendMessage("Vault is required for economy, but wasn't found!");
@@ -92,16 +86,15 @@ public class DiscoverWarps extends JavaPlugin {
     }
 
     //Loading economy API from Vault
-    private boolean setupEconomy() {
+    private void setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
+            return;
         }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            return false;
+            return;
         }
         economy = rsp.getProvider();
-        return economy != null;
     }
 
     public void debug(Object o) {
