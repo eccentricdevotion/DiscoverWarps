@@ -25,11 +25,12 @@ public class DiscoverWarpsDatabase {
     public void createTables() {
         ResultSet rsNew = null;
         ResultSet rsWG = null;
+        ResultSet rsI = null;
         ResultSet rsUUID = null;
         ResultSet rsRegions = null;
         try {
             statement = connection.createStatement();
-            String queryWarps = "CREATE TABLE IF NOT EXISTS discoverwarps (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT COLLATE NOCASE, world TEXT, x INTEGER, y INTEGER, z INTEGER, enabled INTEGER, auto INTEGER DEFAULT 0, cost INTEGER DEFAULT 0)";
+            String queryWarps = "CREATE TABLE IF NOT EXISTS discoverwarps (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT COLLATE NOCASE, world TEXT, x INTEGER, y INTEGER, z INTEGER, enabled INTEGER, auto INTEGER DEFAULT 0, cost INTEGER DEFAULT 0, icon TEXT DEFAULT 'STONE_PRESSURE_PLATE')";
             statement.executeUpdate(queryWarps);
             String queryVisited = "CREATE TABLE IF NOT EXISTS players (pid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uuid TEXT DEFAULT '', player TEXT COLLATE NOCASE DEFAULT '', visited TEXT DEFAULT '', regions TEXT DEFAULT '')";
             statement.executeUpdate(queryVisited);
@@ -51,7 +52,14 @@ public class DiscoverWarpsDatabase {
                 String queryAlterWG = "ALTER TABLE discoverwarps ADD region TEXT DEFAULT ''";
                 statement.executeUpdate(queryAlterWG);
             }
-            rsWG.close();
+            // update discoverwarps if there is no icon column
+            String queryI = "SELECT sql FROM sqlite_master WHERE tbl_name = 'discoverwarps' AND sql LIKE '%icon TEXT%'";
+            rsI = statement.executeQuery(queryI);
+            if (!rsI.next()) {
+                String queryAlterWG = "ALTER TABLE discoverwarps ADD icon TEXT DEFAULT 'STONE_PRESSURE_PLATE'";
+                statement.executeUpdate(queryAlterWG);
+            }
+            rsI.close();
             // update players if there is no uuid column
             String queryUUID = "SELECT sql FROM sqlite_master WHERE tbl_name = 'players' AND sql LIKE '%uuid TEXT%'";
             rsUUID = statement.executeQuery(queryUUID);
@@ -80,6 +88,12 @@ public class DiscoverWarpsDatabase {
             if (rsWG != null) {
                 try {
                     rsWG.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (rsI != null) {
+                try {
+                    rsI.close();
                 } catch (SQLException e) {
                 }
             }

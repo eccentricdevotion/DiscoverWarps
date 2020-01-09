@@ -37,6 +37,8 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         admincmds.add("sign");
         admincmds.add("allow_buying");
         admincmds.add("xp_on_discover");
+        admincmds.add("rename");
+        admincmds.add("icon");
         usercmds = new ArrayList<>();
         usercmds.add("tp");
         usercmds.add("list");
@@ -55,7 +57,28 @@ public class DiscoverWarpsCommands implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("discoverwarps")) {
             if (args.length == 0) {
-                String HELP = plugin.getConfig().getString("localisation.help.set") + ":\n" + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.delete") + ":\n" + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.disable") + ":\n" + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.enable") + ":\n" + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.auto") + ":\n" + ChatColor.GREEN + "/dw auto [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.cost") + ":\n" + ChatColor.GREEN + "/dw cost [name] [amount]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.list") + ":\n" + ChatColor.GREEN + "/dw list" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.warp") + ":\n" + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.buy") + ":\n" + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET + "\n" + plugin.getConfig().getString("localisation.help.config") + ":\n" + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
+                String HELP = plugin.getConfig().getString("localisation.help.set") + ":\n"
+                        + ChatColor.GREEN + "/dw set [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.delete") + ":\n"
+                        + ChatColor.GREEN + "/dw delete [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.disable") + ":\n"
+                        + ChatColor.GREEN + "/dw disable [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.enable") + ":\n"
+                        + ChatColor.GREEN + "/dw enable [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.auto") + ":\n"
+                        + ChatColor.GREEN + "/dw auto [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.cost") + ":\n"
+                        + ChatColor.GREEN + "/dw cost [name] [amount]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.rename") + ":\n"
+                        + ChatColor.GREEN + "/dw rename [old_name] [new_name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.list") + ":\n"
+                        + ChatColor.GREEN + "/dw list" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.warp") + ":\n"
+                        + ChatColor.GREEN + "/dw tp [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.buy") + ":\n"
+                        + ChatColor.GREEN + "/dw buy [name]" + ChatColor.RESET + "\n"
+                        + plugin.getConfig().getString("localisation.help.config") + ":\n"
+                        + ChatColor.GREEN + "/dw [config setting name]" + ChatColor.RESET + " e.g. /dw allow_buying";
                 sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.help"));
                 sender.sendMessage("------------");
                 sender.sendMessage(HELP.split("\n"));
@@ -138,7 +161,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             ps.executeUpdate();
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.added"), args[1]));
                         } catch (SQLException e) {
-                            plugin.debug("Could not insert new discover plate, " + e);
+                            plugin.debug("Could not insert new discover plate, " + e.getMessage());
                         } finally {
                             if (rsName != null) {
                                 try {
@@ -183,7 +206,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not delete discover plate, " + e);
+                        plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
                         if (rsName != null) {
                             try {
@@ -218,7 +241,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not enable discover plate, " + e);
+                        plugin.debug("Could not enable discover plate, " + e.getMessage());
                     } finally {
                         if (rsName != null) {
                             try {
@@ -253,7 +276,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not disable discover plate, " + e);
+                        plugin.debug("Could not disable discover plate, " + e.getMessage());
                     } finally {
                         if (rsName != null) {
                             try {
@@ -290,7 +313,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not set auto discover plate option, " + e);
+                        plugin.debug("Could not set auto discover plate option, " + e.getMessage());
                     } finally {
                         if (rsAuto != null) {
                             try {
@@ -332,7 +355,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not set discover plate cost, " + e);
+                        plugin.debug("Could not set discover plate cost, " + e.getMessage());
                     } finally {
                         if (rsCost != null) {
                             try {
@@ -348,164 +371,32 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     }
                 }
-            }
-            if (usercmds.contains(args[0])) {
-                if (!sender.hasPermission("discoverwarps.use")) {
-                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.permission"));
-                    return true;
-                }
-                if (args[0].equalsIgnoreCase("list")) {
-                    Statement statement = null;
-                    ResultSet rsList = null;
-                    try {
-                        Connection connection = service.getConnection();
-                        statement = connection.createStatement();
-                        List<String> visited = new ArrayList<>();
-                        if (sender instanceof Player) {
-                            Player player = (Player) sender;
-                            String uuid = player.getUniqueId().toString();
-                            // get players visited plates
-                            String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
-                            ResultSet rsVisited = statement.executeQuery(queryVisited);
-                            if (rsVisited.isBeforeFirst()) {
-                                visited = Arrays.asList(rsVisited.getString("visited").split(","));
-                            }
-                        }
-                        String queryList = "SELECT id, name, auto, cost FROM discoverwarps WHERE enabled = 1";
-                        rsList = statement.executeQuery(queryList);
-                        // check name is valid
-                        if (rsList.isBeforeFirst()) {
-                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.list"));
-                            sender.sendMessage("------------");
-                            int i = 1;
-                            String discovered;
-                            while (rsList.next()) {
-                                discovered = (visited.contains(rsList.getString("id"))) ? ChatColor.GREEN + plugin.getConfig().getString("localisation.visited") : ChatColor.RED + plugin.getConfig().getString("localisation.not_visited");
-                                String status = (rsList.getBoolean("auto")) ? ChatColor.BLUE + plugin.getConfig().getString("localisation.auto") : discovered;
-                                String warp = rsList.getString("name");
-                                String cost = "";
-                                if (plugin.getConfig().getBoolean("allow_buying") && !visited.contains(rsList.getString("id"))) {
-                                    int amount = rsList.getInt("cost");
-                                    if (amount > 0) {
-                                        cost = ChatColor.RESET + " [" + plugin.economy.format(amount) + "]";
-                                    }
-                                }
-                                sender.sendMessage(i + ". " + warp + " " + status + cost);
-                                i++;
-                            }
-                            sender.sendMessage("------------");
-                            return true;
-                        } else {
-                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.none_set"));
-                            return true;
-                        }
-                    } catch (SQLException e) {
-                        plugin.debug("Could not list discover plates, " + e);
-                    } finally {
-                        if (rsList != null) {
-                            try {
-                                rsList.close();
-                            } catch (SQLException ex) {
-                            }
-                        }
-                        if (statement != null) {
-                            try {
-                                statement.close();
-                            } catch (SQLException ex) {
-                            }
-                        }
-                    }
-                }
-                if (args[0].equalsIgnoreCase("tp")) {
-                    Player player;
-                    boolean must_discover = true;
-                    if (sender instanceof Player) {
-                        player = (Player) sender;
-                    } else {
-                        // tp specified player to specified warp
-                        if (args.length < 3) {
-                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
-                            return true;
-                        }
-                        // check the player
-                        player = plugin.getServer().getPlayer(args[2]);
-                        if (player == null || !player.isOnline()) {
-                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_player"));
-                            return true;
-                        }
-                        if (args.length == 4 && args[3].toLowerCase().equals("true")) {
-                            must_discover = false;
-                        }
-                    }
-                    long cd = plugin.getConfig().getLong("cooldown") * 1000;
-                    if (cd > 0) {
-                        if (plugin.getDiscoverWarpCooldowns().containsKey(player.getUniqueId())) {
-                            long expire = plugin.getDiscoverWarpCooldowns().get(player.getUniqueId()) + cd;
-                            long now = System.currentTimeMillis();
-                            if (expire > now) {
-                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.no_warp_cooldown"), (expire - now) / 1000));
-                                return true;
-                            }
-                        }
-                    }
-                    if (args.length == 1) {
-                        // open GUI
-                        ItemStack[] warps = new DiscoverWarpsGUIInventory(plugin, player.getUniqueId()).getWarps();
-                        Inventory gui = plugin.getServer().createInventory(player, 54, ChatColor.RED + plugin.getConfig().getString("localisation.plugin_name"));
-                        gui.setContents(warps);
-                        player.openInventory(gui);
-                        return true;
-                    }
-                    if (args.length < 2) {
-                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
-                        return false;
-                    }
+                if (args[0].equalsIgnoreCase("delete")) {
                     Statement statement = null;
                     ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
                         statement = connection.createStatement();
-                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "' COLLATE NOCASE";
+                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
                         rsName = statement.executeQuery(queryName);
                         // check name is valid
                         if (rsName.next()) {
-                            String id = rsName.getString("id");
-                            String warp = rsName.getString("name");
                             World w = plugin.getServer().getWorld(rsName.getString("world"));
                             int x = rsName.getInt("x");
                             int y = rsName.getInt("y");
                             int z = rsName.getInt("z");
-                            boolean auto = rsName.getBoolean("auto");
-                            if (must_discover) {
-                                List<String> visited = new ArrayList<>();
-                                // can the player tp to here?
-                                String uuid = player.getUniqueId().toString();
-                                // get players visited plates
-                                String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
-                                ResultSet rsVisited = statement.executeQuery(queryVisited);
-                                if (rsVisited.isBeforeFirst()) {
-                                    visited = Arrays.asList(rsVisited.getString("visited").split(","));
-                                }
-                                if (!visited.contains(id) && !auto) {
-                                    sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
-                                    return true;
-                                }
-                            }
-                            World from = player.getLocation().getWorld();
-                            Location l = new Location(w, x, y, z);
-                            l.setPitch(player.getLocation().getPitch());
-                            l.setYaw(player.getLocation().getYaw());
-                            if (cd > 0) {
-                                plugin.getDiscoverWarpCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
-                            }
-                            new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
+                            String queryDel = "DELETE FROM discoverwarps WHERE name = '" + args[1] + "'";
+                            statement.executeUpdate(queryDel);
+                            Block b = w.getBlockAt(x, y, z);
+                            b.setType(Material.AIR);
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
                             return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
                             return true;
                         }
                     } catch (SQLException e) {
-                        plugin.debug("Could not find discover plate record, " + e);
+                        plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
                         if (rsName != null) {
                             try {
@@ -521,76 +412,37 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         }
                     }
                 }
-                if (args[0].equalsIgnoreCase("buy")) {
-                    if (!plugin.getConfig().getBoolean("allow_buying")) {
-                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_buying"));
+                if (args[0].equalsIgnoreCase("rename")) {
+                    if (args.length < 3) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
                         return true;
-                    }
-                    Player player;
-                    if (sender instanceof Player) {
-                        player = (Player) sender;
-                    } else {
-                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.only_player"));
-                        return true;
-                    }
-                    if (args.length < 2) {
-                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
-                        return false;
                     }
                     Statement statement = null;
-                    ResultSet rsBuy = null;
+                    PreparedStatement ps = null;
+                    ResultSet rsName = null;
                     try {
                         Connection connection = service.getConnection();
                         statement = connection.createStatement();
-                        String queryBuy = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
-                        rsBuy = statement.executeQuery(queryBuy);
+                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
+                        rsName = statement.executeQuery(queryName);
                         // check name is valid
-                        if (rsBuy.next()) {
-                            boolean firstplate = true;
-                            double cost = rsBuy.getDouble("cost");
-                            if (cost <= 0) {
-                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
-                                return true;
-                            }
-                            String uuid = player.getUniqueId().toString();
-                            // check they have sufficient balance
-                            double bal = plugin.economy.getBalance(player);
-                            if (cost > bal) {
-                                player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_money"));
-                                return true;
-                            }
-                            String id = rsBuy.getString("id");
-                            String queryDiscover = "";
-                            // check whether they have visited this plate before
-                            String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
-                            ResultSet rsPlayer = statement.executeQuery(queryPlayer);
-                            if (rsPlayer.next()) {
-                                firstplate = false;
-                                String data = rsPlayer.getString("visited");
-                                String[] visited = data.split(",");
-                                if (Arrays.asList(visited).contains(id)) {
-                                    sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
-                                    return true;
-                                }
-                                queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
-                            }
-                            if (firstplate == true) {
-                                queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
-                            }
-                            statement.executeUpdate(queryDiscover);
-                            plugin.economy.withdrawPlayer(player, cost);
-                            player.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
-                            return true;
+                        if (rsName.next()) {
+                            String queryRename = "UPDATE discoverwarps SET name = ? WHERE id = ?";
+                            ps = connection.prepareStatement(queryRename);
+                            ps.setString(1, args[2]);
+                            ps.setInt(2, rsName.getInt("id"));
+                            ps.executeUpdate();
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.renamed"), args[1], args[2]));
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
-                        plugin.debug("Could not buy discover plate, " + e);
+                        plugin.debug("Could not rename discover plate, " + e.getMessage());
                     } finally {
-                        if (rsBuy != null) {
+                        if (rsName != null) {
                             try {
-                                rsBuy.close();
+                                rsName.close();
                             } catch (SQLException ex) {
                             }
                         }
@@ -600,6 +452,321 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             } catch (SQLException ex) {
                             }
                         }
+                        if (ps != null) {
+                            try {
+                                ps.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                    }
+                }if (args[0].equalsIgnoreCase("icon")) {
+                    if (args.length < 3) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
+                        return true;
+                    }
+                    // check material name
+                    Material material;
+                    try {
+                        material = Material.valueOf(args[2].toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_material"));
+                        return true;
+                    }
+                    Statement statement = null;
+                    PreparedStatement ps = null;
+                    ResultSet rsName = null;
+                    try {
+                        Connection connection = service.getConnection();
+                        statement = connection.createStatement();
+                        String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
+                        rsName = statement.executeQuery(queryName);
+                        // check name is valid
+                        if (rsName.next()) {
+                            String queryRename = "UPDATE discoverwarps SET icon = ? WHERE id = ?";
+                            ps = connection.prepareStatement(queryRename);
+                            ps.setString(1, material.toString());
+                            ps.setInt(2, rsName.getInt("id"));
+                            ps.executeUpdate();
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.icon"));
+                        } else {
+                            sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                        }
+                        return true;
+                    } catch (SQLException e) {
+                        plugin.debug("Could not rename discover plate, " + e.getMessage());
+                    } finally {
+                        if (rsName != null) {
+                            try {
+                                rsName.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (statement != null) {
+                            try {
+                                statement.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                        if (ps != null) {
+                            try {
+                                ps.close();
+                            } catch (SQLException ex) {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (usercmds.contains(args[0])) {
+            if (!sender.hasPermission("discoverwarps.use")) {
+                sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.permission"));
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("list")) {
+                Statement statement = null;
+                ResultSet rsList = null;
+                try {
+                    Connection connection = service.getConnection();
+                    statement = connection.createStatement();
+                    List<String> visited = new ArrayList<>();
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        String uuid = player.getUniqueId().toString();
+                        // get players visited plates
+                        String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
+                        ResultSet rsVisited = statement.executeQuery(queryVisited);
+                        if (rsVisited.isBeforeFirst()) {
+                            visited = Arrays.asList(rsVisited.getString("visited").split(","));
+                        }
+                    }
+                    String queryList = "SELECT id, name, auto, cost FROM discoverwarps WHERE enabled = 1";
+                    rsList = statement.executeQuery(queryList);
+                    // check name is valid
+                    if (rsList.isBeforeFirst()) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.list"));
+                        sender.sendMessage("------------");
+                        int i = 1;
+                        String discovered;
+                        while (rsList.next()) {
+                            discovered = (visited.contains(rsList.getString("id"))) ? ChatColor.GREEN + plugin.getConfig().getString("localisation.visited") : ChatColor.RED + plugin.getConfig().getString("localisation.not_visited");
+                            String status = (rsList.getBoolean("auto")) ? ChatColor.BLUE + plugin.getConfig().getString("localisation.auto") : discovered;
+                            String warp = rsList.getString("name");
+                            String cost = "";
+                            if (plugin.getConfig().getBoolean("allow_buying") && !visited.contains(rsList.getString("id"))) {
+                                int amount = rsList.getInt("cost");
+                                if (amount > 0) {
+                                    cost = ChatColor.RESET + " [" + plugin.economy.format(amount) + "]";
+                                }
+                            }
+                            sender.sendMessage(i + ". " + warp + " " + status + cost);
+                            i++;
+                        }
+                        sender.sendMessage("------------");
+                        return true;
+                    } else {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.none_set"));
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    plugin.debug("Could not list discover plates, " + e);
+                } finally {
+                    if (rsList != null) {
+                        try {
+                            rsList.close();
+                        } catch (SQLException ex) {
+                        }
+                    }
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException ex) {
+                        }
+                    }
+                }
+            }
+            if (args[0].equalsIgnoreCase("tp")) {
+                Player player;
+                boolean must_discover = true;
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
+                    // tp specified player to specified warp
+                    if (args.length < 3) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
+                        return true;
+                    }
+                    // check the player
+                    player = plugin.getServer().getPlayer(args[2]);
+                    if (player == null || !player.isOnline()) {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_player"));
+                        return true;
+                    }
+                    if (args.length == 4 && args[3].toLowerCase().equals("true")) {
+                        must_discover = false;
+                    }
+                }
+                long cd = plugin.getConfig().getLong("cooldown") * 1000;
+                if (cd > 0) {
+                    if (plugin.getDiscoverWarpCooldowns().containsKey(player.getUniqueId())) {
+                        long expire = plugin.getDiscoverWarpCooldowns().get(player.getUniqueId()) + cd;
+                        long now = System.currentTimeMillis();
+                        if (expire > now) {
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.no_warp_cooldown"), (expire - now) / 1000));
+                            return true;
+                        }
+                    }
+                }
+                if (args.length == 1) {
+                    // open GUI
+                    ItemStack[] warps = new DiscoverWarpsGUIInventory(plugin, player.getUniqueId()).getWarps();
+                    Inventory gui = plugin.getServer().createInventory(player, 54, ChatColor.RED + plugin.getConfig().getString("localisation.plugin_name"));
+                    gui.setContents(warps);
+                    player.openInventory(gui);
+                    return true;
+                }
+                if (args.length < 2) {
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
+                    return false;
+                }
+                Statement statement = null;
+                ResultSet rsName = null;
+                try {
+                    Connection connection = service.getConnection();
+                    statement = connection.createStatement();
+                    String queryName = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "' COLLATE NOCASE";
+                    rsName = statement.executeQuery(queryName);
+                    // check name is valid
+                    if (rsName.next()) {
+                        String id = rsName.getString("id");
+                        String warp = rsName.getString("name");
+                        World w = plugin.getServer().getWorld(rsName.getString("world"));
+                        int x = rsName.getInt("x");
+                        int y = rsName.getInt("y");
+                        int z = rsName.getInt("z");
+                        boolean auto = rsName.getBoolean("auto");
+                        if (must_discover) {
+                            List<String> visited = new ArrayList<>();
+                            // can the player tp to here?
+                            String uuid = player.getUniqueId().toString();
+                            // get players visited plates
+                            String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
+                            ResultSet rsVisited = statement.executeQuery(queryVisited);
+                            if (rsVisited.isBeforeFirst()) {
+                                visited = Arrays.asList(rsVisited.getString("visited").split(","));
+                            }
+                            if (!visited.contains(id) && !auto) {
+                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.needs_discover"), warp));
+                                return true;
+                            }
+                        }
+                        World from = player.getLocation().getWorld();
+                        Location l = new Location(w, x, y, z);
+                        l.setPitch(player.getLocation().getPitch());
+                        l.setYaw(player.getLocation().getYaw());
+                        if (cd > 0) {
+                            plugin.getDiscoverWarpCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
+                        }
+                        new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
+                        return true;
+                    } else {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    plugin.debug("Could not find discover plate record, " + e);
+                } finally {
+                    if (rsName != null) {
+                        try {
+                            rsName.close();
+                        } catch (SQLException ex) {
+                        }
+                    }
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException ex) {
+                        }
+                    }
+                }
+            }
+            if (args[0].equalsIgnoreCase("buy")) {
+                if (!plugin.getConfig().getBoolean("allow_buying")) {
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_buying"));
+                    return true;
+                }
+                Player player;
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.only_player"));
+                    return true;
+                }
+                if (args.length < 2) {
+                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
+                    return false;
+                }
+                Statement statement = null;
+                ResultSet rsBuy = null;
+                try {
+                    Connection connection = service.getConnection();
+                    statement = connection.createStatement();
+                    String queryBuy = "SELECT * FROM discoverwarps WHERE name = '" + args[1] + "'";
+                    rsBuy = statement.executeQuery(queryBuy);
+                    // check name is valid
+                    if (rsBuy.next()) {
+                        boolean firstplate = true;
+                        double cost = rsBuy.getDouble("cost");
+                        if (cost <= 0) {
+                            sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.cannot_buy"), args[1]));
+                            return true;
+                        }
+                        String uuid = player.getUniqueId().toString();
+                        // check they have sufficient balance
+                        double bal = plugin.economy.getBalance(player);
+                        if (cost > bal) {
+                            player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.buying.no_money"));
+                            return true;
+                        }
+                        String id = rsBuy.getString("id");
+                        String queryDiscover = "";
+                        // check whether they have visited this plate before
+                        String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
+                        ResultSet rsPlayer = statement.executeQuery(queryPlayer);
+                        if (rsPlayer.next()) {
+                            firstplate = false;
+                            String data = rsPlayer.getString("visited");
+                            String[] visited = data.split(",");
+                            if (Arrays.asList(visited).contains(id)) {
+                                sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.no_need"), args[1]));
+                                return true;
+                            }
+                            queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
+                        }
+                        if (firstplate == true) {
+                            queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
+                        }
+                        statement.executeUpdate(queryDiscover);
+                        plugin.economy.withdrawPlayer(player, cost);
+                        player.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
+                        return true;
+                    } else {
+                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    plugin.debug("Could not buy discover plate, " + e);
+                } finally {
+                    if (rsBuy != null) {
+                        try {
+                            rsBuy.close();
+                        } catch (SQLException ex) {
+                        }
+                    }
+                    if (statement != null) {
+                        try {
+                            statement.close();
+                        } catch (SQLException ex) {
+                        }
                     }
                 }
             }
@@ -607,3 +774,4 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         return false;
     }
 }
+

@@ -23,6 +23,9 @@ localisation:
     enabled: DiscoverPlate %s enabled!
     disabled: DiscoverPlate %s disabled!
     deleted: DiscoverPlate %s deleted!
+    renamed: DiscoverPlate %s renamed to %s!
+    no_material: Invalid material specified!
+    icon: DiscoverPlate icon set!
     str_true: true
     str_false: false
     restart: A server restart will be needed in order to hook %s into your economy plugin
@@ -46,6 +49,8 @@ localisation:
   help:
     set: To set a stone or wood pressure plate as a DiscoverPlate, stand on it and then type
     delete: To delete a DiscoverPlate type
+    rename: To rename a DiscoverPlate type
+    icon: To set the DiscoverPlate icon displayed in the GUI
     disable: To disable a DiscoverPlate type
     enable: To enable a DiscoverPlate type
     auto: To make a DiscoverPlate auto-discovered type
