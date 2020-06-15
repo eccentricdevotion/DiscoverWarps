@@ -7,7 +7,6 @@ public class DiscoverWarpsDatabase {
     private static final DiscoverWarpsDatabase instance = new DiscoverWarpsDatabase();
     public Connection connection = null;
     public Statement statement = null;
-    private DiscoverWarps plugin;
 
     public static synchronized DiscoverWarpsDatabase getInstance() {
         return instance;
@@ -77,7 +76,7 @@ public class DiscoverWarpsDatabase {
             }
             rsRegions.close();
         } catch (SQLException e) {
-            plugin.debug("Create table error: " + e);
+            System.err.println("Create table error: " + e);
         } finally {
             if (rsNew != null) {
                 try {
