@@ -19,9 +19,9 @@ import java.util.List;
 public class DiscoverWarpsTabComplete implements TabCompleter {
 
     private final DiscoverWarps plugin;
-    DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
     private final List<String> CMD_SUBS = Arrays.asList("allow_buying", "auto", "buy", "cost", "delete", "disable", "enable", "icon", "list", "rename", "set", "sign", "tp", "xp_on_discover");
     private final List<String> MAT_SUBS = new ArrayList<>();
+    DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
 
     public DiscoverWarpsTabComplete(DiscoverWarps plugin) {
         this.plugin = plugin;
@@ -35,9 +35,10 @@ public class DiscoverWarpsTabComplete implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         switch (args.length) {
-            case 1:
+            case 1 -> {
                 return partial(args[0], CMD_SUBS);
-            case 2:
+            }
+            case 2 -> {
                 Statement statement = null;
                 ResultSet rsNames = null;
                 try {
@@ -69,13 +70,16 @@ public class DiscoverWarpsTabComplete implements TabCompleter {
                     }
                 }
                 return null;
-            case 3:
+            }
+            case 3 -> {
                 if (args[0].equalsIgnoreCase("icon")) {
                     return partial(args[2], MAT_SUBS);
                 }
                 return null;
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
     }
 

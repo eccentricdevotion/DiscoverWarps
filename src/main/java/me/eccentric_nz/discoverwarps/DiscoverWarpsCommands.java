@@ -119,8 +119,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("set")) {
-                    if (sender instanceof Player) {
-                        Player p = (Player) sender;
+                    if (sender instanceof Player p) {
                         Location l = p.getLocation();
                         //l.setY(l.getY() - .2);
                         Block b = l.getBlock();
@@ -529,8 +528,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     Connection connection = service.getConnection();
                     statement = connection.createStatement();
                     List<String> visited = new ArrayList<>();
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
+                    if (sender instanceof Player player) {
                         String uuid = player.getUniqueId().toString();
                         // get players visited plates
                         String queryVisited = "SELECT visited FROM players WHERE uuid = '" + uuid + "'";
