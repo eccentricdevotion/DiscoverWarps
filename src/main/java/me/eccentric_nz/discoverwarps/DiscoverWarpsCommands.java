@@ -50,7 +50,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         validBlocks.add(Material.OAK_PRESSURE_PLATE);
         validBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
         validBlocks.add(Material.STONE_PRESSURE_PLATE);
-    }
+        validBlocks.add(Material.WARPED_PRESSURE_PLATE);
+        validBlocks.add(Material.CRIMSON_PRESSURE_PLATE);
+        validBlocks.add(Material.MANGROVE_PRESSURE_PLATE);
+        validBlocks.add(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE);    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
