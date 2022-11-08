@@ -3,30 +3,22 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.7.3</version>
+    <version>1.7.4</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
             <id>Spigot</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>worldedit_worldguard</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>multiverse</id>
+            <url>https://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
+        </repository>
     </repositories>
-    <profiles>
-        <profile>
-            <id>jenkins</id>
-            <repositories>
-                <repository>
-                    <id>macgeek</id>
-                    <url>file:///Users/macgeek/maven/repo</url>
-                </repository>
-            </repositories>
-            <activation>
-                <property>
-                    <name>env.BUILD_NUMBER</name>
-                </property>
-            </activation>
-        </profile>
-    </profiles>
     <build>
         <finalName>DiscoverWarps</finalName>
         <plugins>
@@ -54,7 +46,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-rc3-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -69,10 +61,15 @@
         <dependency>
             <groupId>com.onarandombox.multiversecore</groupId>
             <artifactId>Multiverse-Core</artifactId>
-            <version>4.1.1-SNAPSHOT</version>
+            <version>4.3.2-SNAPSHOT</version>
             <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/Multiverse-Core.jar</systemPath>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>multiworld</groupId>
@@ -83,20 +80,70 @@
             <systemPath>${basedir}/lib/MultiWorld.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>7.0.5-SNAPSHOT</version>
+            <groupId>com.sk89q.worldguard</groupId>
+            <artifactId>worldguard-bukkit</artifactId>
+            <version>7.0.8-SNAPSHOT</version>
             <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/WorldGuard.jar</systemPath>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sk89q.worldguard.worldguard-libs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sk89q</groupId>
+                    <artifactId>commandbook</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>7.3.0-SNAPSHOT</version>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.11-SNAPSHOT</version>
             <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/WorldEdit.jar</systemPath>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sk89q.worldedit.worldedit-libs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bstats</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.schlichtherle</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <properties>

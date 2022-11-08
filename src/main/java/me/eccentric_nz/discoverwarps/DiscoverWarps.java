@@ -59,7 +59,7 @@ public class DiscoverWarps extends JavaPlugin {
         }
         localisedName = ChatColor.GOLD + "[" + getConfig().getString("localisation.plugin_name") + "] " + ChatColor.RESET;
         getCommand("discoverwarps").setExecutor(new DiscoverWarpsCommands(this));
-        getCommand("discoverwarps").setTabCompleter(new DiscoverWarpsTabComplete(this));
+        getCommand("discoverwarps").setTabCompleter(new DiscoverWarpsTabComplete());
 
         registerListeners();
 
@@ -98,7 +98,7 @@ public class DiscoverWarps extends JavaPlugin {
     }
 
     public void debug(Object o) {
-        if (getConfig().getBoolean("debug") == true) {
+        if (getConfig().getBoolean("debug")) {
             console.sendMessage("[DiscoverWarps Debug] " + o);
         }
     }

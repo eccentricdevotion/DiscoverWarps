@@ -18,13 +18,11 @@ import java.util.List;
 
 public class DiscoverWarpsTabComplete implements TabCompleter {
 
-    private final DiscoverWarps plugin;
     private final List<String> CMD_SUBS = Arrays.asList("allow_buying", "auto", "buy", "cost", "delete", "disable", "enable", "icon", "list", "rename", "set", "sign", "tp", "xp_on_discover");
     private final List<String> MAT_SUBS = new ArrayList<>();
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
 
-    public DiscoverWarpsTabComplete(DiscoverWarps plugin) {
-        this.plugin = plugin;
+    public DiscoverWarpsTabComplete() {
         for (Material m : Material.values()) {
             if (!m.toString().startsWith("LEGACY")) {
                 MAT_SUBS.add(m.toString());

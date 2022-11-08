@@ -46,12 +46,8 @@ public class DiscoverWarpsExplodeListener implements Listener {
                     Block block = explosionWorld.getBlockAt(x, y, z);
                     Block under = block.getRelative(BlockFace.DOWN);
                     // if the block is a DiscoverPlate then remove it
-                    if (blocks.contains(under)) {
-                        blocks.remove(under);
-                    }
-                    if (blocks.contains(block)) {
-                        blocks.remove(block);
-                    }
+                    blocks.remove(under);
+                    blocks.remove(block);
                 }
             }
         } catch (SQLException e) {

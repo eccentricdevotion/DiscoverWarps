@@ -77,21 +77,21 @@ public class DiscoverWarpsPlateListener implements Listener {
                                 if (Arrays.asList(visited).contains(id)) {
                                     discovered = true;
                                 }
-                                if (discovered == false) {
+                                if (!discovered) {
                                     queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                 }
                             }
-                            if (discovered == false && firstplate == true) {
+                            if (!discovered && firstplate) {
                                 queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                             }
                             statement.executeUpdate(queryDiscover);
-                            if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
+                            if (plugin.getConfig().getBoolean("xp_on_discover") && !discovered) {
                                 Location loc = p.getLocation();
                                 loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
                                 world.spawn(loc, ExperienceOrb.class).setExperience(plugin.getConfig().getInt("xp_to_give"));
                             }
-                            if (discovered == false) {
+                            if (!discovered) {
                                 p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
                             }
                             rsPlayer.close();

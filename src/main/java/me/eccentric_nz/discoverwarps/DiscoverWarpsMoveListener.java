@@ -52,9 +52,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                 parent = parent.getParent();
             }
         }
-        parentNames.forEach((name) -> {
-            regions.remove(name);
-        });
+        parentNames.forEach(regions::remove);
         return regions.getFirst();
     }
 
@@ -66,7 +64,7 @@ public class DiscoverWarpsMoveListener implements Listener {
             Location l = event.getTo();
             Location loc = p.getLocation(); // Grab Location
 
-            /**
+            /*
              * Copyright (c) 2011, The Multiverse Team All rights reserved.
              * Check the Player has actually moved a block to prevent unneeded
              * calculations... This is to prevent huge performance drops on high
@@ -114,7 +112,7 @@ public class DiscoverWarpsMoveListener implements Listener {
                             String warp = rsPlate.getString("name");
                             String queryDiscover = "";
                             // check whether they have visited this plate before
-                            String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid.toString() + "'";
+                            String queryPlayer = "SELECT * FROM players WHERE uuid = '" + uuid + "'";
                             rsPlayer = statement.executeQuery(queryPlayer);
                             if (rsPlayer.next()) {
                                 firstplate = false;
@@ -123,20 +121,20 @@ public class DiscoverWarpsMoveListener implements Listener {
                                 if (Arrays.asList(visited).contains(id)) {
                                     discovered = true;
                                 }
-                                if (discovered == false) {
+                                if (!discovered) {
                                     queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "', regions = '" + rsPlayer.getString("regions") + "," + region + "' WHERE uuid = '" + uuid + "'";
                                 }
                             }
-                            if (discovered == false && firstplate == true) {
+                            if (!discovered && firstplate) {
                                 queryDiscover = "INSERT INTO players (uuid, visited, regions) VALUES ('" + uuid + "','" + id + "','" + region + "')";
                             }
                             statement.executeUpdate(queryDiscover);
-                            if (plugin.getConfig().getBoolean("xp_on_discover") && discovered == false) {
+                            if (plugin.getConfig().getBoolean("xp_on_discover") && !discovered) {
                                 loc.setX(loc.getBlockX() + 1);
                                 World world = loc.getWorld();
                                 world.spawn(loc, ExperienceOrb.class).setExperience(plugin.getConfig().getInt("xp_to_give"));
                             }
-                            if (discovered == false) {
+                            if (!discovered) {
                                 p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
                             }
                             rsPlayer.close();

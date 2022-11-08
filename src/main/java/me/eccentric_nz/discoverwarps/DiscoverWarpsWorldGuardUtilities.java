@@ -33,9 +33,7 @@ public class DiscoverWarpsWorldGuardUtilities {
                     parent = parent.getParent();
                 }
             }
-            parentNames.forEach((name) -> {
-                regions.remove(name);
-            });
+            parentNames.forEach(regions::remove);
             region_name = regions.getFirst();
             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.region_found"), region_name));
         }

@@ -72,7 +72,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                     if (Arrays.asList(visited).contains(id)) {
                                         discovered = true;
                                     }
-                                    if (discovered == false && auto == false) {
+                                    if (!discovered && !auto) {
                                         // check if there is a cost
                                         if (cost > 0 && plugin.getConfig().getBoolean("allow_buying")) {
                                             // check if they have sufficient balance
@@ -87,14 +87,14 @@ public class DiscoverWarpsSignListener implements Listener {
                                             p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.signs.needs_discover"), warp));
                                             return;
                                         }
-                                    } else if (auto == true) {
+                                    } else if (auto) {
                                         plugin.debug("Auto is true");
                                         if (!data.isEmpty()) {
                                             queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                                         }
                                     }
                                 }
-                                if (discovered == false && firstplate == true) {
+                                if (!discovered && firstplate) {
                                     queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                                 }
                                 statement.executeUpdate(queryDiscover);
@@ -103,7 +103,7 @@ public class DiscoverWarpsSignListener implements Listener {
                                 l.setPitch(p.getLocation().getPitch());
                                 l.setYaw(p.getLocation().getYaw());
                                 new DiscoverWarpsMover(plugin).movePlayer(p, l, p.getLocation().getWorld());
-                                if (discovered == false) {
+                                if (!discovered) {
                                     p.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.discovered"), warp));
                                 }
                                 rsPlayer.close();

@@ -98,8 +98,6 @@ public class DiscoverWarpsGUIListener implements Listener {
      * @param p the player using the GUI
      */
     public void close(Player p) {
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            p.closeInventory();
-        }, 1L);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, p::closeInventory, 1L);
     }
 }

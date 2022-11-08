@@ -23,39 +23,37 @@ public class DiscoverWarpsMover {
         this.plugin = plugin;
     }
 
-    public void movePlayer(Player p, Location l, World from) {
+    public void movePlayer(Player player, Location location, World from) {
 
-        p.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.teleport") + "...");
+        player.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.teleport") + "...");
 
-        Player thePlayer = p;
-        Location theLocation = l;
-        World to = theLocation.getWorld();
-        boolean allowFlight = thePlayer.getAllowFlight();
+        World to = location.getWorld();
+        boolean allowFlight = player.getAllowFlight();
         boolean crossWorlds = (from != to);
         boolean isSurvival = checkSurvival(to);
 
         // adjust location to centre of plate
-        theLocation.setX(l.getX() + 0.5);
-        theLocation.setZ(l.getZ() + 0.5);
+        location.setX(location.getX() + 0.5);
+        location.setZ(location.getZ() + 0.5);
 
         // try loading chunk
-        World world = l.getWorld();
-        Chunk chunk = world.getChunkAt(l);
+        World world = location.getWorld();
+        Chunk chunk = world.getChunkAt(location);
         if (!world.isChunkLoaded(chunk)) {
             world.loadChunk(chunk);
         }
 
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            thePlayer.teleport(theLocation);
-            thePlayer.getWorld().playSound(theLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
+            player.teleport(location);
+            player.getWorld().playSound(location, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
         }, 5L);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            thePlayer.teleport(theLocation);
+            player.teleport(location);
             if (plugin.getConfig().getBoolean("no_damage")) {
-                thePlayer.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
+                player.setNoDamageTicks(plugin.getConfig().getInt("no_damage_time") * 20);
             }
-            if (thePlayer.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
-                thePlayer.setAllowFlight(true);
+            if (player.getGameMode() == GameMode.CREATIVE || (allowFlight && crossWorlds && !isSurvival)) {
+                player.setAllowFlight(true);
             }
         }, 10L);
     }

@@ -13,12 +13,11 @@ public class DiscoverWarpsConfig {
     HashMap<String, String> strOptions = new HashMap<>();
     HashMap<String, Integer> intOptions = new HashMap<>();
     HashMap<String, Boolean> boolOptions = new HashMap<>();
-    private FileConfiguration config = null;
-    private File configFile = null;
+    private final FileConfiguration config;
 
     public DiscoverWarpsConfig(DiscoverWarps plugin) {
         this.plugin = plugin;
-        configFile = new File(plugin.getDataFolder(), "config.yml");
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
         // boolean
         boolOptions.put("no_damage", false);

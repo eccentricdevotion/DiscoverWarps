@@ -199,11 +199,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             Block b = w.getBlockAt(x, y, z);
                             b.setType(Material.AIR);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
@@ -234,11 +233,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String queryDel = "UPDATE discoverwarps SET enabled = 1 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.enabled"), args[1]));
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not enable discover plate, " + e.getMessage());
                     } finally {
@@ -269,11 +267,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String queryDel = "UPDATE discoverwarps SET enabled = 0 WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.disabled"), args[1]));
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not disable discover plate, " + e.getMessage());
                     } finally {
@@ -306,11 +303,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String queryDel = "UPDATE discoverwarps SET auto = " + auto + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.auto_discover"), args[1]) + " " + bool + "!");
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not set auto discover plate option, " + e.getMessage());
                     } finally {
@@ -348,11 +344,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             String queryDel = "UPDATE discoverwarps SET cost = " + cost + " WHERE name = '" + args[1] + "'";
                             statement.executeUpdate(queryDel);
                             sender.sendMessage(plugin.getLocalisedName() + "DiscoverPlate " + args[1] + " now costs " + cost + " to buy!");
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not set discover plate cost, " + e.getMessage());
                     } finally {
@@ -389,11 +384,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             Block b = w.getBlockAt(x, y, z);
                             b.setType(Material.AIR);
                             sender.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.commands.deleted"), args[1]));
-                            return true;
                         } else {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                            return true;
                         }
+                        return true;
                     } catch (SQLException e) {
                         plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
@@ -560,11 +554,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             i++;
                         }
                         sender.sendMessage("------------");
-                        return true;
                     } else {
                         sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.none_set"));
-                        return true;
                     }
+                    return true;
                 } catch (SQLException e) {
                     plugin.debug("Could not list discover plates, " + e);
                 } finally {
@@ -599,7 +592,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_player"));
                         return true;
                     }
-                    if (args.length == 4 && args[3].toLowerCase().equals("true")) {
+                    if (args.length == 4 && args[3].equalsIgnoreCase("true")) {
                         must_discover = false;
                     }
                 }
@@ -665,11 +658,10 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             plugin.getDiscoverWarpCooldowns().put(player.getUniqueId(), System.currentTimeMillis());
                         }
                         new DiscoverWarpsMover(plugin).movePlayer(player, l, from);
-                        return true;
                     } else {
                         sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                        return true;
                     }
+                    return true;
                 } catch (SQLException e) {
                     plugin.debug("Could not find discover plate record, " + e);
                 } finally {
@@ -740,17 +732,16 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                             }
                             queryDiscover = "UPDATE players SET visited = '" + data + "," + id + "' WHERE uuid = '" + uuid + "'";
                         }
-                        if (firstplate == true) {
+                        if (firstplate) {
                             queryDiscover = "INSERT INTO players (uuid, visited) VALUES ('" + uuid + "','" + id + "')";
                         }
                         statement.executeUpdate(queryDiscover);
                         plugin.economy.withdrawPlayer(player, cost);
                         player.sendMessage(plugin.getLocalisedName() + String.format(plugin.getConfig().getString("localisation.buying.bought"), args[1]) + " " + cost);
-                        return true;
                     } else {
                         sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_plate_name"));
-                        return true;
                     }
+                    return true;
                 } catch (SQLException e) {
                     plugin.debug("Could not buy discover plate, " + e);
                 } finally {
