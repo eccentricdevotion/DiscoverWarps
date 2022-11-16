@@ -18,12 +18,15 @@ localisation:
     no_warp_name: You need to supply a warp name!
     no_warp_cooldown: You need to wait %s seconds before warping again.
     needs_discover: You need to discover %s before you can teleport to it!
+    needs_undiscover: You need to discover %s before you can forget it!
     auto_discover: DiscoverPlate %s auto-discovery is
     added: DiscoverPlate %s added!
     enabled: DiscoverPlate %s enabled!
     disabled: DiscoverPlate %s disabled!
     deleted: DiscoverPlate %s deleted!
     renamed: DiscoverPlate %s renamed to %s!
+    cleared: DiscoverPlate locations cleared!
+    forgotten: DiscoverPlate %s forgotten!
     no_material: Invalid material specified!
     icon: DiscoverPlate icon set!
     str_true: true
@@ -58,6 +61,8 @@ localisation:
     list: To list DiscoverPlates type
     warp: To warp to a DiscoverPlate type
     buy: To buy a DiscoverPlate location type
+    undiscover: To forget a DiscoverPlate location type
+    clear: To make a player (or all players) forget their DiscoverPlate locations type
     config: To toggle DiscoverWarps config settings type
   ## sign messages
   signs:
