@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.7.4</version>
+    <version>1.7.5</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
