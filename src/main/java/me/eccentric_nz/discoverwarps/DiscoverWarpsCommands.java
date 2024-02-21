@@ -1,9 +1,6 @@
 package me.eccentric_nz.discoverwarps;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,7 +20,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
     List<String> admincmds;
     List<String> usercmds;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    List<Material> validBlocks = new ArrayList<>();
 
     public DiscoverWarpsCommands(DiscoverWarps plugin) {
         this.plugin = plugin;
@@ -45,17 +41,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
         usercmds.add("undiscover");
         usercmds.add("list");
         usercmds.add("buy");
-        validBlocks.add(Material.ACACIA_PRESSURE_PLATE);
-        validBlocks.add(Material.BIRCH_PRESSURE_PLATE);
-        validBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
-        validBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
-        validBlocks.add(Material.OAK_PRESSURE_PLATE);
-        validBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
-        validBlocks.add(Material.STONE_PRESSURE_PLATE);
-        validBlocks.add(Material.WARPED_PRESSURE_PLATE);
-        validBlocks.add(Material.CRIMSON_PRESSURE_PLATE);
-        validBlocks.add(Material.MANGROVE_PRESSURE_PLATE);
-        validBlocks.add(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE);
     }
 
     @Override
@@ -135,7 +120,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         Block b = l.getBlock();
                         // check player is standing on pressure plate
                         Material m = b.getType();
-                        if (!validBlocks.contains(m)) {
+                        if (!Tag.PRESSURE_PLATES.isTagged(m)) {
                             sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.not_plate"));
                             return true;
                         }

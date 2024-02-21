@@ -2,6 +2,7 @@ package me.eccentric_nz.discoverwarps;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
@@ -23,27 +24,16 @@ public class DiscoverWarpsPlateListener implements Listener {
 
     DiscoverWarps plugin;
     DiscoverWarpsDatabase service = DiscoverWarpsDatabase.getInstance();
-    List<Material> validBlocks = new ArrayList<>();
 
     public DiscoverWarpsPlateListener(DiscoverWarps plugin) {
         this.plugin = plugin;
-        validBlocks.add(Material.ACACIA_PRESSURE_PLATE);
-        validBlocks.add(Material.BIRCH_PRESSURE_PLATE);
-        validBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
-        validBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
-        validBlocks.add(Material.OAK_PRESSURE_PLATE);
-        validBlocks.add(Material.SPRUCE_PRESSURE_PLATE);
-        validBlocks.add(Material.STONE_PRESSURE_PLATE);
-        validBlocks.add(Material.WARPED_PRESSURE_PLATE);
-        validBlocks.add(Material.CRIMSON_PRESSURE_PLATE);
-        validBlocks.add(Material.MANGROVE_PRESSURE_PLATE);
-        validBlocks.add(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE);    }
+    }
 
     @EventHandler
     public void onPlateStep(PlayerInteractEvent event) {
         Action a = event.getAction();
         Block b = event.getClickedBlock();
-        if (a.equals(Action.PHYSICAL) && validBlocks.contains(b.getType())) {
+        if (a.equals(Action.PHYSICAL) && Tag.PRESSURE_PLATES.isTagged(b.getType())) {
             Player p = event.getPlayer();
             String uuid = p.getUniqueId().toString();
             if (p.hasPermission("discoverwarps.use")) {

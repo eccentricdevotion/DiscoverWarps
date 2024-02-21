@@ -24,7 +24,7 @@ public class DiscoverWarpsTabComplete implements TabCompleter {
 
     public DiscoverWarpsTabComplete() {
         for (Material m : Material.values()) {
-            if (!m.toString().startsWith("LEGACY")) {
+            if (!m.toString().startsWith("LEGACY") && m.isItem()) {
                 MAT_SUBS.add(m.toString());
             }
         }
