@@ -66,17 +66,14 @@ public class DiscoverWarpsProtectionListener implements Listener {
             } catch (SQLException e) {
                 plugin.debug("Could not find discover plate to protect, " + e);
             } finally {
-                if (rsPlate != null) {
-                    try {
+                try {
+                    if (rsPlate != null) {
                         rsPlate.close();
-                    } catch (SQLException e) {
                     }
-                }
-                if (statement != null) {
-                    try {
+                    if (statement != null) {
                         statement.close();
-                    } catch (SQLException e) {
                     }
+                } catch (SQLException ignored) {
                 }
             }
         }

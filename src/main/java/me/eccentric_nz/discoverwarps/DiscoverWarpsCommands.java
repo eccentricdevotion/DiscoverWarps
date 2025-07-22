@@ -157,17 +157,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         } catch (SQLException e) {
                             plugin.debug("Could not insert new discover plate, " + e.getMessage());
                         } finally {
-                            if (rsName != null) {
-                                try {
+                            try {
+                                if (rsName != null) {
                                     rsName.close();
-                                } catch (SQLException ex) {
                                 }
-                            }
-                            if (statement != null) {
-                                try {
+                                if (statement != null) {
                                     statement.close();
-                                } catch (SQLException ex) {
                                 }
+                            } catch (SQLException ignored) {
                             }
                         }
                     } else {
@@ -201,17 +198,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -235,17 +229,16 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not enable discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
+
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
+
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -269,17 +262,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not disable discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -305,17 +295,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not set auto discover plate option, " + e.getMessage());
                     } finally {
-                        if (rsAuto != null) {
-                            try {
+                        try {
+                            if (rsAuto != null) {
                                 rsAuto.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -346,17 +333,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not set discover plate cost, " + e.getMessage());
                     } finally {
-                        if (rsCost != null) {
-                            try {
+                        try {
+                            if (rsCost != null) {
                                 rsCost.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -386,17 +370,15 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not delete discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
+
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -428,23 +410,17 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not rename discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (ps != null) {
-                            try {
+                            if (ps != null) {
                                 ps.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -484,31 +460,21 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     } catch (SQLException e) {
                         plugin.debug("Could not rename discover plate, " + e.getMessage());
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (ps != null) {
-                            try {
+                            if (ps != null) {
                                 ps.close();
-                            } catch (SQLException ex) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
                 if (args[0].equalsIgnoreCase("clear")) {
-                    if (args.length < 2) {
-                        sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.arguments"));
-                        return false;
-                    }
                     String clear = "DELETE from players";
                     if (!args[1].equalsIgnoreCase("all")) {
                         // get player uuid
@@ -533,7 +499,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (statement != null) {
                             try {
                                 statement.close();
-                            } catch (SQLException ex) {
+                            } catch (SQLException ignored) {
                             }
                         }
                     }
@@ -592,17 +558,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 } catch (SQLException e) {
                     plugin.debug("Could not list discover plates, " + e);
                 } finally {
-                    if (rsList != null) {
-                        try {
+                    try {
+                        if (rsList != null) {
                             rsList.close();
-                        } catch (SQLException ex) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException ex) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }
@@ -645,10 +608,6 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                     gui.setContents(warps);
                     player.openInventory(gui);
                     return true;
-                }
-                if (args.length < 2) {
-                    sender.sendMessage(plugin.getLocalisedName() + plugin.getConfig().getString("localisation.commands.no_warp_name"));
-                    return false;
                 }
                 Statement statement = null;
                 ResultSet rsName = null;
@@ -696,17 +655,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 } catch (SQLException e) {
                     plugin.debug("Could not find discover plate record, " + e);
                 } finally {
-                    if (rsName != null) {
-                        try {
+                    try {
+                        if (rsName != null) {
                             rsName.close();
-                        } catch (SQLException ex) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException ex) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }
@@ -776,17 +732,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 } catch (SQLException e) {
                     plugin.debug("Could not buy discover plate, " + e);
                 } finally {
-                    if (rsBuy != null) {
-                        try {
+                    try {
+                        if (rsBuy != null) {
                             rsBuy.close();
-                        } catch (SQLException ex) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException ex) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }
@@ -819,7 +772,7 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                         if (rsPlayer.next()) {
                             String data = rsPlayer.getString("visited");
                             List<String> visited = Arrays.asList(data.split(","));
-                            StringBuilder forgotten = new StringBuilder("");
+                            StringBuilder forgotten = new StringBuilder();
                             String queryUpdate;
                             if (visited.contains(id)) {
                                 if (visited.size() > 1) {
@@ -847,17 +800,14 @@ public class DiscoverWarpsCommands implements CommandExecutor {
                 } catch (SQLException e) {
                     plugin.debug("Could not buy discover plate, " + e);
                 } finally {
-                    if (rsForget != null) {
-                        try {
+                    try {
+                        if (rsForget != null) {
                             rsForget.close();
-                        } catch (SQLException ex) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException ex) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }

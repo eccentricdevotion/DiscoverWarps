@@ -145,23 +145,17 @@ public class DiscoverWarpsMoveListener implements Listener {
                 } catch (SQLException e) {
                     plugin.debug("Could not update player's visited data, " + e);
                 } finally {
-                    if (rsPlayer != null) {
-                        try {
+                    try {
+                        if (rsPlayer != null) {
                             rsPlayer.close();
-                        } catch (SQLException e) {
                         }
-                    }
-                    if (rsPlate != null) {
-                        try {
+                        if (rsPlate != null) {
                             rsPlate.close();
-                        } catch (SQLException e) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException e) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }

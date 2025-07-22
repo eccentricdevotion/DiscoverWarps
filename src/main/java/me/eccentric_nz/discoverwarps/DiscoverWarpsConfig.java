@@ -111,7 +111,7 @@ public class DiscoverWarpsConfig {
                 i++;
             }
         }
-        if (config.getString("localisation.commands.not_plate").equals("You are not standing on a stone pressure plate")) {
+        if (config.getString("localisation.commands.not_plate", "").equals("You are not standing on a stone pressure plate")) {
             plugin.getConfig().set("localisation.commands.not_plate", "You are not standing on a pressure plate");
         }
         plugin.saveConfig();

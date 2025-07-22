@@ -53,18 +53,14 @@ public class DiscoverWarpsExplodeListener implements Listener {
         } catch (SQLException e) {
             plugin.debug("Explosion Listener error, " + e);
         } finally {
-            if (rsWarpBlocks != null) {
-                try {
+            try {
+                if (rsWarpBlocks != null) {
                     rsWarpBlocks.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (statement != null) {
-                try {
-
+                if (statement != null) {
                     statement.close();
-                } catch (SQLException e) {
                 }
+            } catch (SQLException ignored) {
             }
         }
     }

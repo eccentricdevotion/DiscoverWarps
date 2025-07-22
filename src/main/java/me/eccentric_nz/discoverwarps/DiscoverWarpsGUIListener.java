@@ -74,17 +74,16 @@ public class DiscoverWarpsGUIListener implements Listener {
                     } catch (SQLException e) {
                         plugin.debug("Could not find discover plate record, " + e);
                     } finally {
-                        if (rsName != null) {
-                            try {
+                        try {
+                            if (rsName != null) {
+
                                 rsName.close();
-                            } catch (SQLException ex) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException ex) {
+
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }

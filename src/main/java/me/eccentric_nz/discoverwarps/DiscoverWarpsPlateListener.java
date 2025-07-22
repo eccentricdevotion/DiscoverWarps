@@ -1,7 +1,6 @@
 package me.eccentric_nz.discoverwarps;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -16,9 +15,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class DiscoverWarpsPlateListener implements Listener {
 
@@ -95,23 +92,17 @@ public class DiscoverWarpsPlateListener implements Listener {
                 } catch (SQLException e) {
                     plugin.debug("Could not update player's visited data, " + e);
                 } finally {
-                    if (rsPlayer != null) {
-                        try {
+                    try {
+                        if (rsPlayer != null) {
                             rsPlayer.close();
-                        } catch (SQLException e) {
                         }
-                    }
-                    if (rsPlate != null) {
-                        try {
+                        if (rsPlate != null) {
                             rsPlate.close();
-                        } catch (SQLException e) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException e) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             }

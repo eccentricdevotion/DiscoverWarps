@@ -5,6 +5,8 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,13 +33,14 @@ public class DiscoverWarpsSignListener implements Listener {
     public void onSignClick(PlayerInteractEvent event) {
         Action a = event.getAction();
         Block b = event.getClickedBlock();
-        if (a.equals(Action.RIGHT_CLICK_BLOCK) && Tag.SIGNS.getValues().contains(b.getType())) {
+        if (b != null && a.equals(Action.RIGHT_CLICK_BLOCK) && Tag.SIGNS.getValues().contains(b.getType())) {
             Sign s = (Sign) b.getState();
-            if (s.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
+            SignSide side = s.getSide(Side.FRONT);
+            if (side.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
                 Player p = event.getPlayer();
                 String uuid = p.getUniqueId().toString();
                 if (p.hasPermission("discoverwarps.use")) {
-                    String plate = s.getLine(1);
+                    String plate = side.getLine(1);
                     Statement statement = null;
                     ResultSet rsPlate = null;
                     ResultSet rsPlayer = null;
@@ -114,23 +117,17 @@ public class DiscoverWarpsSignListener implements Listener {
                     } catch (SQLException e) {
                         plugin.debug("Could not update player's visited data from sign, " + e);
                     } finally {
-                        if (rsPlayer != null) {
-                            try {
+                        try {
+                            if (rsPlayer != null) {
                                 rsPlayer.close();
-                            } catch (SQLException e) {
                             }
-                        }
-                        if (rsPlate != null) {
-                            try {
+                            if (rsPlate != null) {
                                 rsPlate.close();
-                            } catch (SQLException e) {
                             }
-                        }
-                        if (statement != null) {
-                            try {
+                            if (statement != null) {
                                 statement.close();
-                            } catch (SQLException e) {
                             }
+                        } catch (SQLException ignored) {
                         }
                     }
                 }
@@ -142,7 +139,7 @@ public class DiscoverWarpsSignListener implements Listener {
     public void onSignChange(SignChangeEvent event) {
         String line1 = event.getLine(0);
         String firstline = "[" + plugin.getConfig().getString("sign") + "]";
-        if (line1.equalsIgnoreCase(firstline)) {
+        if (firstline.equalsIgnoreCase(line1)) {
             Player player = event.getPlayer();
             if (player.hasPermission("discoverwarps.admin")) {
                 String line2 = event.getLine(1);
@@ -167,17 +164,14 @@ public class DiscoverWarpsSignListener implements Listener {
                 } catch (SQLException e) {
                     plugin.debug("Could not get data for sign, " + e);
                 } finally {
-                    if (rsPlate != null) {
-                        try {
+                    try {
+                        if (rsPlate != null) {
                             rsPlate.close();
-                        } catch (SQLException e) {
                         }
-                    }
-                    if (statement != null) {
-                        try {
+                        if (statement != null) {
                             statement.close();
-                        } catch (SQLException e) {
                         }
+                    } catch (SQLException ignored) {
                     }
                 }
             } else {

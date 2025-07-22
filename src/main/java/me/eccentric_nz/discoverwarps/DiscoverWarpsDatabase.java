@@ -78,41 +78,26 @@ public class DiscoverWarpsDatabase {
         } catch (SQLException e) {
             System.err.println("Create table error: " + e);
         } finally {
-            if (rsNew != null) {
-                try {
+            try {
+                if (rsNew != null) {
                     rsNew.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (rsWG != null) {
-                try {
+                if (rsWG != null) {
                     rsWG.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (rsI != null) {
-                try {
+                if (rsI != null) {
                     rsI.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (rsUUID != null) {
-                try {
+                if (rsUUID != null) {
                     rsUUID.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (rsRegions != null) {
-                try {
+                if (rsRegions != null) {
                     rsRegions.close();
-                } catch (SQLException e) {
                 }
-            }
-            if (statement != null) {
-                try {
+                if (statement != null) {
                     statement.close();
-                } catch (SQLException e) {
                 }
+            } catch (SQLException ignored) {
             }
         }
     }
