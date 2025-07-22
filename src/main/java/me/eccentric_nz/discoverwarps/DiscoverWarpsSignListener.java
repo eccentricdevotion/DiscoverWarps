@@ -35,19 +35,22 @@ public class DiscoverWarpsSignListener implements Listener {
         Block b = event.getClickedBlock();
         if (b != null && a.equals(Action.RIGHT_CLICK_BLOCK) && Tag.SIGNS.getValues().contains(b.getType())) {
             Sign s = (Sign) b.getState();
-            SignSide side = s.getSide(Side.FRONT);
-            if (side.getLine(0).equalsIgnoreCase("[" + plugin.getConfig().getString("sign") + "]")) {
+            SignSide front = s.getSide(Side.FRONT);
+            SignSide back = s.getSide(Side.BACK);
+            String identifier = "[" + plugin.getConfig().getString("sign") + "]";
+            boolean isFront = front.getLine(0).equalsIgnoreCase(identifier);
+            if (isFront || back.getLine(0).equalsIgnoreCase(identifier)) {
                 Player p = event.getPlayer();
                 String uuid = p.getUniqueId().toString();
                 if (p.hasPermission("discoverwarps.use")) {
-                    String plate = side.getLine(1);
+                    String plate = isFront ? front.getLine(1) : back.getLine(1);
                     Statement statement = null;
                     ResultSet rsPlate = null;
                     ResultSet rsPlayer = null;
                     try {
                         Connection connection = service.getConnection();
                         statement = connection.createStatement();
-                        // get their current gamemode inventory from database
+                        // get the plate record from the database
                         String getQuery = "SELECT * FROM discoverwarps WHERE name = '" + plate + "'";
                         rsPlate = statement.executeQuery(getQuery);
                         if (rsPlate.next()) {
