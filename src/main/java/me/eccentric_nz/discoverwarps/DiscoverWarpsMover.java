@@ -3,14 +3,15 @@
  */
 package me.eccentric_nz.discoverwarps;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import multiworld.MultiWorldPlugin;
 import multiworld.api.MultiWorldAPI;
 import multiworld.api.MultiWorldWorldData;
 import multiworld.api.flag.FlagName;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
 /**
  * @author eccentric_nz
@@ -67,9 +68,9 @@ public class DiscoverWarpsMover {
     private boolean checkSurvival(World w) {
         boolean bool = false;
         if (plugin.pm.isPluginEnabled("Multiverse-Core")) {
-            MultiverseCore mv = (MultiverseCore) plugin.pm.getPlugin("Multiverse-Core");
-            MultiverseWorld mvw = mv.getCore().getMVWorldManager().getMVWorld(w);
-            GameMode gm = mvw.getGameMode();
+            MultiverseCoreApi coreApi = MultiverseCoreApi.get();
+            Option<MultiverseWorld> mvw = coreApi.getWorldManager().getWorld(w);
+            GameMode gm = mvw.get().getGameMode();
             if (gm.equals(GameMode.SURVIVAL)) {
                 bool = true;
             }

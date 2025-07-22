@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.discoverwarps</groupId>
     <artifactId>DiscoverWarps</artifactId>
-    <version>1.7.5</version>
+    <version>1.8.0</version>
     <name>DiscoverWarps</name>
     <repositories>
         <repository>
@@ -16,7 +16,8 @@
         </repository>
         <repository>
             <id>multiverse</id>
-            <url>https://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
+            <name>Multiverse Repository</name>
+            <url>https://repo.onarandombox.com/multiverse-releases/</url>
         </repository>
     </repositories>
     <build>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.8-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -59,9 +60,9 @@
             <systemPath>${basedir}/lib/Vault.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.onarandombox.multiversecore</groupId>
-            <artifactId>Multiverse-Core</artifactId>
-            <version>4.3.2-SNAPSHOT</version>
+            <groupId>org.mvplugins.multiverse.core</groupId>
+            <artifactId>multiverse-core</artifactId>
+            <version>5.1.1</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.8-SNAPSHOT</version>
+            <version>7.0.14-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
